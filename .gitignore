@@ -338,3 +338,10 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+/dead_by_daylight/logs
+/dead_by_daylight/overlay/imgui/misc/fonts
+/dead_by_daylight/overlay/imgui/misc/cpp/README.txt
+*.md
+/dead_by_daylight/overlay/imgui/misc/natvis/README.txt
+/dead_by_daylight/overlay/imgui/misc/README.txt
+/dead_by_daylight/icons

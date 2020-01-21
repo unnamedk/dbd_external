@@ -31,7 +31,7 @@ IndentWidth: '4'
 IndentWrappedFunctionNames: 'true'
 NamespaceIndentation: All
 PointerAlignment: Right
-SortIncludes: 'true'
+SortIncludes: 'false'
 SpaceAfterCStyleCast: 'true'
 SpaceBeforeAssignmentOperators: 'true'
 SpaceInEmptyParentheses: 'false'

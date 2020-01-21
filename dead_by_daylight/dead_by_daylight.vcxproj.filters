@@ -13,9 +13,138 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\overlay">
+      <UniqueIdentifier>{57b60451-4326-49a2-a7a4-23eac4064b76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\overlay">
+      <UniqueIdentifier>{26c24460-5bd5-4e42-aef6-9eedeb79338b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\utils">
+      <UniqueIdentifier>{8c5e2a52-7814-45e5-adf4-0a7e95786df3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\native">
+      <UniqueIdentifier>{2a287a9f-d1a7-4d9e-a77e-86d075ac8a84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\imgui">
+      <UniqueIdentifier>{836a9dc9-4c94-4b2e-9593-61cf408f3f24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\imgui\misc">
+      <UniqueIdentifier>{00819f1a-b6f5-4dd3-acd8-348c18a388e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\imgui\misc\cpp">
+      <UniqueIdentifier>{5cdbdd74-2d29-4d2f-9b01-4774b7190ad0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\imgui\misc\natvis">
+      <UniqueIdentifier>{c9af9a02-9328-468b-b19f-357266f944f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\imgui\dx11">
+      <UniqueIdentifier>{1584991b-f589-4083-b54e-341143da708a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\config">
+      <UniqueIdentifier>{f4f21675-87e1-4a39-a0bd-b7ea1ae96143}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\sdk">
+      <UniqueIdentifier>{af6c89a6-5bff-47f8-919f-32a2bebc0534}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\config">
+      <UniqueIdentifier>{85c37749-a9fd-4169-a582-1ed462d6dd02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\sdk">
+      <UniqueIdentifier>{d9acce47-a2ce-4aaf-a77a-d3f6b0fa3a09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\cheats">
+      <UniqueIdentifier>{afe655bc-f0e3-430f-8ac1-cb7b5854ba64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\math">
+      <UniqueIdentifier>{03530199-4d40-4071-8eeb-48c820426c05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\math">
+      <UniqueIdentifier>{63aa3fb1-097b-4dda-b111-634fe268617e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\cheats">
+      <UniqueIdentifier>{35684aff-17f8-4026-afc3-34081b172a3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\utils">
+      <UniqueIdentifier>{4ff06763-b9d5-4054-888b-a916f65ac626}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="overlay\menu.cpp">
+      <Filter>Source Files\overlay</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\winapi-cpp\winapi-cpp\native\driver.cpp">
+      <Filter>Resource Files\native</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\winapi-cpp\winapi-cpp\native\handle.cpp">
+      <Filter>Resource Files\native</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\winapi-cpp\winapi-cpp\native\loader.cpp">
+      <Filter>Resource Files\native</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\winapi-cpp\winapi-cpp\native\pe.cpp">
+      <Filter>Resource Files\native</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\winapi-cpp\winapi-cpp\native\process.cpp">
+      <Filter>Resource Files\native</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\winapi-cpp\winapi-cpp\native\utils.cpp">
+      <Filter>Resource Files\native</Filter>
+    </ClCompile>
+    <ClCompile Include="overlay\imgui\imgui.cpp">
+      <Filter>Resource Files\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="overlay\imgui\imgui_demo.cpp">
+      <Filter>Resource Files\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="overlay\imgui\imgui_draw.cpp">
+      <Filter>Resource Files\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="overlay\imgui\imgui_widgets.cpp">
+      <Filter>Resource Files\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="overlay\imgui\misc\cpp\imgui_stdlib.cpp">
+      <Filter>Resource Files\imgui\misc\cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="overlay\imgui\dx11\imgui_impl_dx11.cpp">
+      <Filter>Resource Files\imgui\dx11</Filter>
+    </ClCompile>
+    <ClCompile Include="overlay\imgui\dx11\imgui_impl_win32.cpp">
+      <Filter>Resource Files\imgui\dx11</Filter>
+    </ClCompile>
+    <ClCompile Include="sdk\color.cpp">
+      <Filter>Source Files\sdk</Filter>
+    </ClCompile>
+    <ClCompile Include="config\options.cpp">
+      <Filter>Source Files\config</Filter>
+    </ClCompile>
+    <ClCompile Include="config\config.cpp">
+      <Filter>Source Files\config</Filter>
+    </ClCompile>
+    <ClCompile Include="overlay\imgui\imgui_custom.cpp">
+      <Filter>Resource Files\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="math\math.cpp">
+      <Filter>Source Files\math</Filter>
+    </ClCompile>
+    <ClCompile Include="cheats\actor_manager.cpp">
+      <Filter>Source Files\cheats</Filter>
+    </ClCompile>
+    <ClCompile Include="cheats\offsets.cpp">
+      <Filter>Source Files\cheats</Filter>
+    </ClCompile>
+    <ClCompile Include="cheats\esp.cpp">
+      <Filter>Source Files\cheats</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\misc.cpp">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="cheats\base_actor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cheats\utilities.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -23,5 +152,136 @@
     <None Include=".clang-format">
       <Filter>Resource Files</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="overlay\menu.hpp">
+      <Filter>Header Files\overlay</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\winapi-cpp\winapi-cpp\native\driver.hpp">
+      <Filter>Resource Files\native</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\winapi-cpp\winapi-cpp\native\handle.hpp">
+      <Filter>Resource Files\native</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\winapi-cpp\winapi-cpp\native\loader.hpp">
+      <Filter>Resource Files\native</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\winapi-cpp\winapi-cpp\native\pe.hpp">
+      <Filter>Resource Files\native</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\winapi-cpp\winapi-cpp\native\process.hpp">
+      <Filter>Resource Files\native</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\winapi-cpp\winapi-cpp\native\utils.hpp">
+      <Filter>Resource Files\native</Filter>
+    </ClInclude>
+    <ClInclude Include="overlay\imgui\imconfig.h">
+      <Filter>Resource Files\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="overlay\imgui\imgui.h">
+      <Filter>Resource Files\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="overlay\imgui\imgui_internal.h">
+      <Filter>Resource Files\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="overlay\imgui\imstb_rectpack.h">
+      <Filter>Resource Files\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="overlay\imgui\imstb_textedit.h">
+      <Filter>Resource Files\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="overlay\imgui\imstb_truetype.h">
+      <Filter>Resource Files\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="overlay\imgui\misc\cpp\imgui_stdlib.h">
+      <Filter>Resource Files\imgui\misc\cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="overlay\imgui\dx11\imgui_impl_dx11.h">
+      <Filter>Resource Files\imgui\dx11</Filter>
+    </ClInclude>
+    <ClInclude Include="overlay\imgui\dx11\imgui_impl_win32.h">
+      <Filter>Resource Files\imgui\dx11</Filter>
+    </ClInclude>
+    <ClInclude Include="config\config.hpp">
+      <Filter>Header Files\config</Filter>
+    </ClInclude>
+    <ClInclude Include="config\options.hpp">
+      <Filter>Header Files\config</Filter>
+    </ClInclude>
+    <ClInclude Include="config\parser.hpp">
+      <Filter>Header Files\config</Filter>
+    </ClInclude>
+    <ClInclude Include="sdk\color.hpp">
+      <Filter>Header Files\sdk</Filter>
+    </ClInclude>
+    <ClInclude Include="overlay\imgui\imgui_custom.hpp">
+      <Filter>Resource Files\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="cheats\actor_manager.hpp">
+      <Filter>Header Files\cheats</Filter>
+    </ClInclude>
+    <ClInclude Include="cheats\offsets.hpp">
+      <Filter>Header Files\cheats</Filter>
+    </ClInclude>
+    <ClInclude Include="sdk\base.hpp">
+      <Filter>Header Files\sdk</Filter>
+    </ClInclude>
+    <ClInclude Include="sdk\engine.hpp">
+      <Filter>Header Files\sdk</Filter>
+    </ClInclude>
+    <ClInclude Include="sdk\game.hpp">
+      <Filter>Header Files\sdk</Filter>
+    </ClInclude>
+    <ClInclude Include="sdk\methods.hpp">
+      <Filter>Header Files\sdk</Filter>
+    </ClInclude>
+    <ClInclude Include="sdk\names.hpp">
+      <Filter>Header Files\sdk</Filter>
+    </ClInclude>
+    <ClInclude Include="sdk\objects.hpp">
+      <Filter>Header Files\sdk</Filter>
+    </ClInclude>
+    <ClInclude Include="sdk\sdk.hpp">
+      <Filter>Header Files\sdk</Filter>
+    </ClInclude>
+    <ClInclude Include="math\base_array.hpp">
+      <Filter>Header Files\math</Filter>
+    </ClInclude>
+    <ClInclude Include="math\elem.hpp">
+      <Filter>Header Files\math</Filter>
+    </ClInclude>
+    <ClInclude Include="math\math.hpp">
+      <Filter>Header Files\math</Filter>
+    </ClInclude>
+    <ClInclude Include="cheats\esp.hpp">
+      <Filter>Header Files\cheats</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\misc.hpp">
+      <Filter>Header Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="cheats\base_actor.hpp">
+      <Filter>Header Files\cheats</Filter>
+    </ClInclude>
+    <ClInclude Include="cheats\utilities.hpp">
+      <Filter>Header Files\cheats</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="overlay\imgui\misc\natvis\imgui.natvis">
+      <Filter>Resource Files\imgui\misc\natvis</Filter>
+    </Natvis>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resource.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

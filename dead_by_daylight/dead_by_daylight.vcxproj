@@ -13,7 +13,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{89e31054-ae9d-4122-9285-6cc685a787aa}</ProjectGuid>
-    <VcpkgTriplet Condition="'$(Platform)'=='x64'">x64-windows-static</VcpkgTriplet>
+    <VcpkgTriplet Condition="'$(Platform)'=='x64'">x64-windows</VcpkgTriplet>
     <RootNamespace>dead_by_daylight</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -48,23 +48,27 @@
     <OutDir>$(SolutionDir)bin\$(Configuration.ToLower)_$(Platform)\</OutDir>
     <IntDir>$(Configuration.ToLower)\$(Platform)\</IntDir>
     <TargetName>$(ProjectName)d</TargetName>
+    <IncludePath>D:\user\documents\repositories\cpp\winapi-cpp\winapi-cpp;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IntDir>$(Configuration.ToLower)\$(Platform)\</IntDir>
     <OutDir>$(SolutionDir)bin\$(Configuration.ToLower)_$(Platform)\</OutDir>
+    <IncludePath>D:\user\documents\repositories\cpp\winapi-cpp\winapi-cpp;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NOMINMAX;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>d3d11.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -73,26 +77,100 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NOMINMAX;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\winapi-cpp\winapi-cpp\native\driver.cpp" />
+    <ClCompile Include="..\..\..\winapi-cpp\winapi-cpp\native\handle.cpp" />
+    <ClCompile Include="..\..\..\winapi-cpp\winapi-cpp\native\loader.cpp" />
+    <ClCompile Include="..\..\..\winapi-cpp\winapi-cpp\native\pe.cpp" />
+    <ClCompile Include="..\..\..\winapi-cpp\winapi-cpp\native\process.cpp" />
+    <ClCompile Include="..\..\..\winapi-cpp\winapi-cpp\native\utils.cpp" />
+    <ClCompile Include="cheats\actor_manager.cpp" />
+    <ClCompile Include="cheats\base_actor.cpp" />
+    <ClCompile Include="cheats\esp.cpp" />
+    <ClCompile Include="cheats\offsets.cpp" />
+    <ClCompile Include="cheats\utilities.cpp" />
+    <ClCompile Include="config\config.cpp" />
+    <ClCompile Include="config\options.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="math\math.cpp" />
+    <ClCompile Include="overlay\imgui\dx11\imgui_impl_dx11.cpp" />
+    <ClCompile Include="overlay\imgui\dx11\imgui_impl_win32.cpp" />
+    <ClCompile Include="overlay\imgui\imgui.cpp" />
+    <ClCompile Include="overlay\imgui\imgui_custom.cpp" />
+    <ClCompile Include="overlay\imgui\imgui_demo.cpp" />
+    <ClCompile Include="overlay\imgui\imgui_draw.cpp" />
+    <ClCompile Include="overlay\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="overlay\imgui\misc\cpp\imgui_stdlib.cpp" />
+    <ClCompile Include="overlay\menu.cpp" />
+    <ClCompile Include="sdk\color.cpp" />
+    <ClCompile Include="utils\misc.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\winapi-cpp\winapi-cpp\native\driver.hpp" />
+    <ClInclude Include="..\..\..\winapi-cpp\winapi-cpp\native\handle.hpp" />
+    <ClInclude Include="..\..\..\winapi-cpp\winapi-cpp\native\loader.hpp" />
+    <ClInclude Include="..\..\..\winapi-cpp\winapi-cpp\native\pe.hpp" />
+    <ClInclude Include="..\..\..\winapi-cpp\winapi-cpp\native\process.hpp" />
+    <ClInclude Include="..\..\..\winapi-cpp\winapi-cpp\native\utils.hpp" />
+    <ClInclude Include="cheats\actor_manager.hpp" />
+    <ClInclude Include="cheats\base_actor.hpp" />
+    <ClInclude Include="cheats\esp.hpp" />
+    <ClInclude Include="cheats\utilities.hpp" />
+    <ClInclude Include="cheats\offsets.hpp" />
+    <ClInclude Include="config\config.hpp" />
+    <ClInclude Include="config\options.hpp" />
+    <ClInclude Include="config\parser.hpp" />
+    <ClInclude Include="math\base_array.hpp" />
+    <ClInclude Include="math\elem.hpp" />
+    <ClInclude Include="math\math.hpp" />
+    <ClInclude Include="overlay\imgui\dx11\imgui_impl_dx11.h" />
+    <ClInclude Include="overlay\imgui\dx11\imgui_impl_win32.h" />
+    <ClInclude Include="overlay\imgui\imconfig.h" />
+    <ClInclude Include="overlay\imgui\imgui.h" />
+    <ClInclude Include="overlay\imgui\imgui_custom.hpp" />
+    <ClInclude Include="overlay\imgui\imgui_internal.h" />
+    <ClInclude Include="overlay\imgui\imstb_rectpack.h" />
+    <ClInclude Include="overlay\imgui\imstb_textedit.h" />
+    <ClInclude Include="overlay\imgui\imstb_truetype.h" />
+    <ClInclude Include="overlay\imgui\misc\cpp\imgui_stdlib.h" />
+    <ClInclude Include="overlay\menu.hpp" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="sdk\base.hpp" />
+    <ClInclude Include="sdk\color.hpp" />
+    <ClInclude Include="sdk\engine.hpp" />
+    <ClInclude Include="sdk\game.hpp" />
+    <ClInclude Include="sdk\methods.hpp" />
+    <ClInclude Include="sdk\names.hpp" />
+    <ClInclude Include="sdk\objects.hpp" />
+    <ClInclude Include="sdk\sdk.hpp" />
+    <ClInclude Include="utils\misc.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="overlay\imgui\misc\natvis\imgui.natvis" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resource.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
