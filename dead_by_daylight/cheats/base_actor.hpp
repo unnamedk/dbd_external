@@ -34,11 +34,12 @@ namespace cheats
     class actor_t
     {
     public:
-        actor_t( std::uintptr_t base, actor_tag_t tag, const std::string &pretty_name, const std::string &icon_name )
+        actor_t( std::uintptr_t base, actor_tag_t tag, const std::string &pretty_name, const std::string &icon_name, std::string_view raw_name )
             : m_base( base )
             , m_tag( tag )
             , m_name( pretty_name )
             , m_icon_name( icon_name )
+            , m_raw_name( raw_name )
         {}
 
         virtual bool update( const nt::base_process &p ) = 0;
@@ -48,12 +49,20 @@ namespace cheats
 
         std::uintptr_t base() { return this->m_base; }
         std::string name() { return this->m_name; }
+        std::string_view raw_name() { return this->m_raw_name; }
         std::string icon_name() { return this->m_icon_name; }
         std::int32_t priority() { return config::options.esp.priority_table[ static_cast<std::int32_t>( tag() ) ]; }
+
+        template <typename T>
+        T *as()
+        {
+            return reinterpret_cast<T *>( this );
+        }
 
     protected:
         std::string m_name;
         std::string m_icon_name;
+        std::string_view m_raw_name;
         std::uintptr_t m_base;
         actor_tag_t m_tag;
     };
@@ -90,8 +99,8 @@ namespace cheats
             }
 
             else if ( tag() == actor_tag_t::survivor ) {
-                 auto super = reinterpret_cast<survivor_t *>( this );
-                 super->update_health_component( p );
+                auto super = reinterpret_cast<survivor_t *>( this );
+                super->update_health_component( p );
             }
 
             return true;
@@ -114,7 +123,8 @@ namespace cheats
     {
         using base_member::base_member;
 
-        void update_health_component( const nt::base_process& p ) {
+        void update_health_component( const nt::base_process &p )
+        {
             p.read( reinterpret_cast<std::uintptr_t>( inner().health_component ), m_health );
         }
         sdk::ucamper_health_component &health_component() { return m_health; }

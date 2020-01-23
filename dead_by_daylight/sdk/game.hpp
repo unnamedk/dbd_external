@@ -6,7 +6,8 @@
 namespace sdk
 {
     struct foffering
-    {};
+    {
+    };
 
     struct uplayer_interaction_handler
     {
@@ -29,9 +30,73 @@ namespace sdk
         pad( 0x278 );
         uskillcheck *skillcheck;
     };
+    struct fcharacter_state_data
+    {
+        int pips;
+        fname power_id;
+        pad( 0x4 );
+        tarray<fname> addon_ids;
+    };
+    struct fplayer_state_data
+    {
+        int character_level;
+        fname equipped_favor_id;
+        pad( 0x4 );
+        tarray<fname> perk_ids;
+        tarray<int> perk_levels;
+        bool is_leaving_match;
+        uint8_t player_game_state;
+        pad( 2 );
+        int prestige_level;
+    };
 
-    struct uperk_manager
-    {};
+    struct udbd_player_state : aplayerstate
+    {
+        fstring mirrors_id;
+        fstring content_ver;
+        bool is_player_ready;
+        uint8_t game_role;
+        pad( 0x1e );
+        fcharacter_state_data camper_data;
+        fcharacter_state_data slasher_data;
+        fplayer_state_data player_data;
+        pad( 0x250 + 0x20 );
+        fstring platform_account_id;
+        int selected_camper_index;
+        int selected_slasher_index;
+        pad( 0xe4 );
+        uint8_t platform_flag;
+        pad( 0x3 );
+        bool crossplay_allowed;
+        bool game_level_loaded;
+        pad( 0x6 );
+    };
+    struct ubase_game_modifier_container : uactorcomponent
+    {
+        pad( 0x8 );
+        fname id;
+        pad( 0x10 );
+    };
+    struct uperk : ubase_game_modifier_container
+    {
+        pad( 0xd0 );
+        pad( 0x48 );
+        pad( 0x30 * 3 );
+        int perk_level;
+    };
+    struct uperk_collection_component : uactorcomponent
+    {
+        tarray<uperk *> _array;
+        pad( 0x18 );
+    };
+
+    struct uperk_manager : uactorcomponent
+    {
+        pad( 0x10 );
+        uperk_collection_component *perks;
+        std::uintptr_t status_effects;
+        pad( 0x1e8 );
+    };
 
     struct udbd_player_data
     {};
@@ -53,17 +118,20 @@ namespace sdk
 
     struct adbdplayer : acharacter
     {
+        // BaseDBDPlayer
         char ipad[ 0x10 ];
         int character_index;
         pad( 0x1c );
-        pad( 0x3f0 );
+
+        // DBDPlayer
+        pad( 0x3d0 );
         tarray<foffering> offerings;
         pad( 0x8 );
         uplayer_interaction_handler *interaction_handler;
         pad( 0x8 );
         uperk_manager *perk_manager;
         udbd_player_data *player_data;
-        pad( 0x728 );
+        pad( 0x768 );
     };
     struct ucamper_health_component : uactorcomponent
     {
@@ -84,6 +152,9 @@ namespace sdk
     {
         pad( 0x308 );
         bool is_killing;
+        int8_t allowed_kill_count;
+        int8_t allowed_kill_after_hooking;
+        bool allowed_kill_last_survivor;
     };
     struct ainteractable : aactor
     {

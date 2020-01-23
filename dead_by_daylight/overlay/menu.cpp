@@ -14,6 +14,10 @@
 
 #include <filesystem>
 #include <xorstr.hpp>
+//#include <sol/sol.hpp>
+
+#include <native/utils.hpp>
+#include <fmt/format.h>
 
 #include "../config/options.hpp"
 #include "../cheats/esp.hpp"
@@ -23,6 +27,19 @@
 extern LRESULT ImGui_ImplWin32_WndProcHandler( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam );
 
 static ImVec4 clear_color = ImVec4( 0.45f, 0.55f, 0.60f, 1.00f );
+
+inline void set_tooltip( const char *str )
+{
+    ImGui::SameLine();
+    //ImGui::TextDisabled( "(?)" );
+    if ( ImGui::IsItemHovered() ) {
+        ImGui::BeginTooltip();
+        ImGui::PushTextWrapPos( 450.0f );
+        ImGui::TextUnformatted( str );
+        ImGui::PopTextWrapPos();
+        ImGui::EndTooltip();
+    }
+}
 
 bool overlay::menu::initialize( std::wstring_view window_title )
 {
@@ -309,6 +326,14 @@ void overlay::menu::draw_menu()
             draw_colors_tab();
             ImGui::EndTabItem();
         }
+        if ( ImGui::BeginTabItem( "player list" ) ) {
+            draw_player_list();
+            ImGui::EndTabItem();
+        }
+        /*if ( ImGui::BeginTabItem( "scripts" ) ) {
+            draw_scripts_tab();
+            ImGui::EndTabItem();
+        }*/
         if ( ImGui::BeginTabItem( "changelog" ) ) {
             draw_changelog_tab();
             ImGui::EndTabItem();
@@ -448,29 +473,26 @@ void overlay::menu::draw_esp_tab()
     ImGui::SliderFloat( "radar zoom", &config::options.esp.radar_zoom, 2.f, 50.f );
 
     if ( ImGui::CollapsingHeader( "priorities" ) ) {
-        ImGui::BeginChild( "priorities_child", {}, true );
-        auto make_priority_button = []( const char *name, int &priority ) {
+        int id = 0;
+        auto make_priority_button = [&id]( const char *name, int &priority ) {
             ImGui::Text( "%s", name );
             ImGui::NextColumn();
 
-            // lol
-            char id[ 5 ] = { 0 };
-            std::copy( name, name + 3, id );
-            id[ 2 ] = 'y';
+            ImGui::PushID( id++ );
 
-            if ( ImGui::ArrowButton( id, ImGuiDir_Left ) ) {
+            if ( ImGui::ArrowButton( "#left", ImGuiDir_Left ) ) {
                 priority = std::max( priority - 1, 0 );
             }
 
             ImGui::SameLine();
             ImGui::Text( "%i", priority );
 
-            id[ 2 ] = 'x';
-
             ImGui::SameLine();
-            if ( ImGui::ArrowButton( id, ImGuiDir_Right ) ) {
+            if ( ImGui::ArrowButton( "#right", ImGuiDir_Right ) ) {
                 priority = std::min( 10, priority + 1 );
             }
+
+            ImGui::PopID();
             ImGui::NextColumn();
         };
 
@@ -494,11 +516,9 @@ void overlay::menu::draw_esp_tab()
         make_priority_button( "pallets", config::options.esp.priority_table[ 11 ] );
         make_priority_button( "chests", config::options.esp.priority_table[ 12 ] );
         make_priority_button( "unknown", config::options.esp.priority_table[ 0 ] );
-
-        ImGui::EndChild();
     }
 
-    if ( cheats::esp ) {
+    if ( cheats::esp ) { 
         cheats::esp->run();
     }
 
@@ -523,12 +543,75 @@ void overlay::menu::draw_misc_tab()
     ImGui::EndChild();
 }
 
+void overlay::menu::draw_scripts_tab()
+{
+    //ImGui::BeginChild( "scripts_tab", {}, true );
+
+    static std::unordered_map<std::string, bool> states;
+    {
+        ImGui::ListBoxHeader( "scripts" );
+
+        for ( auto &s : config::options.scripts.script_data ) {
+            auto lua_code = s.data();
+            if ( lua_code.size() >= 100 ) {
+                lua_code.resize( 100 );
+                lua_code += "[...]";
+            }
+
+            ImGui::Selectable( s.name().data(), &states[ s.name() ] );
+            //set_tooltip( lua_code.data() );
+        }
+
+        ImGui::ListBoxFooter();
+    }
+
+    ImGui::Separator();
+
+    static char script_name_buf[ 128 ] = { 0 };
+    ImGui::InputText( "script name", script_name_buf, sizeof( script_name_buf ), ImGuiInputTextFlags_CharsNoBlank );
+
+    const bool is_empty = *script_name_buf == '\0';
+    const bool already_exists = !is_empty && ( std::find_if( config::options.scripts.script_data.begin(), config::options.scripts.script_data.end(), []( auto &s ) {
+        std::string_view view { s.name() };
+        view.remove_suffix( sizeof( ".lua" ) - 1 );
+
+        return view.compare( script_name_buf ) == 0;
+    } ) != config::options.scripts.script_data.end() );
+
+    if ( ImGui::Button( "add script from clipboard" ) && !is_empty && !already_exists ) {
+        const auto clipboard = nt::utils::get_clipboard_data();
+
+        if ( !clipboard.empty() ) {
+            std::string script_name = script_name_buf;
+            auto view = std::string_view { script_name };
+            if ( view.substr( view.size() - 4 ) != ".lua" ) {
+                script_name += ".lua"; // add file extension if it doesn't already have one
+            }
+
+            config::options.scripts.script_data.emplace_back( script_name, clipboard );
+        }
+    }
+
+    //ImGui::EndChild();
+}
+
+void overlay::menu::draw_player_list()
+{
+    ImGui::BeginChild("player_list_tab");
+    if ( cheats::esp ) {
+        cheats::esp->draw_player_list();
+    }
+    ImGui::EndChild();
+}
+
 void overlay::menu::draw_changelog_tab()
 {
     ImGui::BeginChild( "changelog_tab", {}, true );
 
     static std::array changelist {
         std::make_pair( "1.0.0", "initial release" ),
+        std::make_pair( "1.0.1", "updated offsets" ),
+        std::make_pair( "1.0.2", "added player list" )
     };
 
     ImGui::Columns( 2 );

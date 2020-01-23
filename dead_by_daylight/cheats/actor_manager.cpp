@@ -46,6 +46,8 @@ void cheats::actor_manager_t::run_thread()
             continue;
         }
 
+        this->m_process.read( reinterpret_cast<std::uintptr_t>(world.game_state), game_state );
+
         sdk::ulevel level;
         if ( !this->m_process.read( reinterpret_cast<std::uintptr_t>( world.level ), level ) ) {
             continue;
@@ -110,57 +112,57 @@ void cheats::actor_manager_t::run_thread()
 
             switch ( info.type ) {
                 case actor_tag_t::survivor: {
-                    m_actors[ i ] = std::move( std::unique_ptr<cheats::survivor_t>( new cheats::survivor_t( ptr, actor_tag_t::survivor, info.pretty_name, info.name_to_icon() ) ) );
+                    m_actors[ i ] = std::move( std::unique_ptr<cheats::survivor_t>( new cheats::survivor_t( ptr, actor_tag_t::survivor, info.pretty_name, info.name_to_icon(), name ) ) );
                     break;
                 }
                 case actor_tag_t::killer: {
-                    m_actors[ i ] = std::move( std::make_unique<cheats::killer_t>( ptr, actor_tag_t::killer, info.pretty_name, info.name_to_icon() ) );
+                    m_actors[ i ] = std::move( std::make_unique<cheats::killer_t>( ptr, actor_tag_t::killer, info.pretty_name, info.name_to_icon(), name ) );
                     break;
                 }
                 case actor_tag_t::killer_item: {
-                    m_actors[ i ] = std::move( std::make_unique<cheats::trap_t>( ptr, actor_tag_t::killer_item, info.pretty_name, info.name_to_icon() ) );
+                    m_actors[ i ] = std::move( std::make_unique<cheats::trap_t>( ptr, actor_tag_t::killer_item, info.pretty_name, info.name_to_icon(), name ) );
                     break;
                 }
 
                 case actor_tag_t::item: {
-                    m_actors[ i ] = std::move( std::make_unique<cheats::item_t>( ptr, actor_tag_t::item, info.pretty_name, info.name_to_icon() ) );
+                    m_actors[ i ] = std::move( std::make_unique<cheats::item_t>( ptr, actor_tag_t::item, info.pretty_name, info.name_to_icon(), name ) );
                     break;
                 }
                 case actor_tag_t::generator: {
-                    m_actors[ i ] = std::move( std::make_unique<cheats::generator_t>( ptr, actor_tag_t::generator, info.pretty_name, info.name_to_icon() ) );
+                    m_actors[ i ] = std::move( std::make_unique<cheats::generator_t>( ptr, actor_tag_t::generator, info.pretty_name, info.name_to_icon(), name ) );
                     break;
                 }
                 case actor_tag_t::hatch: {
-                    m_actors[ i ] = std::move( std::make_unique<cheats::hatch_t>( ptr, actor_tag_t::hatch, info.pretty_name, info.name_to_icon() ) );
+                    m_actors[ i ] = std::move( std::make_unique<cheats::hatch_t>( ptr, actor_tag_t::hatch, info.pretty_name, info.name_to_icon(), name ) );
                     break;
                 }
                 case actor_tag_t::doors: {
-                    m_actors[ i ] = std::move( std::make_unique<cheats::door_t>( ptr, actor_tag_t::doors, info.pretty_name, info.name_to_icon() ) );
+                    m_actors[ i ] = std::move( std::make_unique<cheats::door_t>( ptr, actor_tag_t::doors, info.pretty_name, info.name_to_icon(), name ) );
                     break;
                 }
                 case actor_tag_t::totem: {
-                    m_actors[ i ] = ( std::move( std::make_unique<cheats::totem_t>( ptr, actor_tag_t::totem, info.pretty_name, info.name_to_icon() ) ) );
+                    m_actors[ i ] = ( std::move( std::make_unique<cheats::totem_t>( ptr, actor_tag_t::totem, info.pretty_name, info.name_to_icon(), name ) ) );
                     break;
                 }
                 case actor_tag_t::locker: {
-                    m_actors[ i ] = ( std::move( std::make_unique<cheats::locker_t>( ptr, actor_tag_t::locker, info.pretty_name, info.name_to_icon() ) ) );
+                    m_actors[ i ] = ( std::move( std::make_unique<cheats::locker_t>( ptr, actor_tag_t::locker, info.pretty_name, info.name_to_icon(), name ) ) );
                     break;
                 }
                 case actor_tag_t::hook: {
-                    m_actors[ i ] = ( std::move( std::make_unique<cheats::hook_t>( ptr, actor_tag_t::hook, info.pretty_name, info.name_to_icon() ) ) );
+                    m_actors[ i ] = ( std::move( std::make_unique<cheats::hook_t>( ptr, actor_tag_t::hook, info.pretty_name, info.name_to_icon(), name ) ) );
                     break;
                 }
                 case actor_tag_t::pallet: {
-                    m_actors[ i ] = std::move( std::make_unique<cheats::pallet_t>( ptr, actor_tag_t::pallet, info.pretty_name, info.name_to_icon() ) );
+                    m_actors[ i ] = std::move( std::make_unique<cheats::pallet_t>( ptr, actor_tag_t::pallet, info.pretty_name, info.name_to_icon(), name ) );
                     break;
                 }
                 case actor_tag_t::chest: {
-                    m_actors[ i ] = std::move( std::make_unique<cheats::chest_t>( ptr, actor_tag_t::chest, info.pretty_name, info.name_to_icon() ) );
+                    m_actors[ i ] = std::move( std::make_unique<cheats::chest_t>( ptr, actor_tag_t::chest, info.pretty_name, info.name_to_icon(), name ) );
                     break;
                 }
                 default: {
                     if ( config::options.esp.debug_mode ) {
-                        m_actors[ i ] = ( std::move( std::make_unique<cheats::default_t>( ptr, actor_tag_t::unknown, std::string( name ), "" ) ) );
+                        m_actors[ i ] = ( std::move( std::make_unique<cheats::default_t>( ptr, actor_tag_t::unknown, std::string( name ), "", name ) ) );
                     }
                 }
             }

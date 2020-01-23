@@ -8,7 +8,7 @@
 
 std::optional<cheats::utilities_t> cheats::utilities;
 
-#define PALLET_KEY VK_SPACE
+#define PALLET_KEY 'F'
 
 void cheats::utilities_t::run_thread()
 {
@@ -148,7 +148,7 @@ void cheats::utilities_t::auto_pallet()
         return; // killer is way too slow
     }
 
-    if ( (killer_position.distance_from( nearest_pallet ) / 100.f) <= 2.3f ) {
+    if ( ( killer_position.distance_from( nearest_pallet ) / 100.f ) <= 2.3f ) {
         utils::press_key( PALLET_KEY );
     }
 }

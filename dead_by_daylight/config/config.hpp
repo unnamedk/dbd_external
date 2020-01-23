@@ -2,6 +2,7 @@
 
 #include "../sdk/color.hpp"
 #include "parser.hpp"
+#include "../cheats/scripts.hpp"
 
 #include <filesystem>
 #include <string>
@@ -46,7 +47,7 @@ namespace config
         template <typename T>
         T get_value( const T &default_value, const std::string &path )
         {
-            return cfg.get_or_insert<T>( default_value, path );
+            return main_cfg.get_or_insert<T>( default_value, path );
         }
 
         void init();
@@ -76,10 +77,12 @@ namespace config
         std::vector<value_t<sdk::color_t>> colors;
 
         void populate_settings();
+        void populate_scripts();
 
-        std::vector<std::filesystem::path> configs_available;
         std::filesystem::path configs_path;
-        parser_t cfg;
+        std::filesystem::path scripts_path;
+        
+        parser_t main_cfg;
     };
 
     extern std::optional<settings_manager> config_system;

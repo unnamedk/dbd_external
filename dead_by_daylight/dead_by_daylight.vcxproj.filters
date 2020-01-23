@@ -135,17 +135,20 @@
     <ClCompile Include="cheats\offsets.cpp">
       <Filter>Source Files\cheats</Filter>
     </ClCompile>
-    <ClCompile Include="cheats\esp.cpp">
-      <Filter>Source Files\cheats</Filter>
-    </ClCompile>
     <ClCompile Include="utils\misc.cpp">
       <Filter>Source Files\utils</Filter>
     </ClCompile>
     <ClCompile Include="cheats\base_actor.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\cheats</Filter>
     </ClCompile>
     <ClCompile Include="cheats\utilities.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\cheats</Filter>
+    </ClCompile>
+    <ClCompile Include="cheats\scripts.cpp">
+      <Filter>Source Files\cheats</Filter>
+    </ClCompile>
+    <ClCompile Include="cheats\esp.cpp">
+      <Filter>Source Files\cheats</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -267,6 +270,9 @@
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cheats\scripts.hpp">
+      <Filter>Header Files\cheats</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

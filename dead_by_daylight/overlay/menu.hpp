@@ -52,6 +52,8 @@ namespace overlay
         void draw_colors_tab();
         void draw_esp_tab();
         void draw_misc_tab();
+        void draw_scripts_tab();
+        void draw_player_list();
         void draw_changelog_tab();
 
         void setup_frame();

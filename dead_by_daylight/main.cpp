@@ -55,6 +55,7 @@ int main( int argc, const char *argv[] )
     }
 
     auto log = spdlog::basic_logger_mt<spdlog::async_factory>( "logger", std::string( xorstr_( "logs/log.txt" ) ), true );
+    config::config_system.emplace().init();
 
     spdlog::info( xorstr_( "waiting for the game" ) );
     log->info( xorstr_( "waiting for the game" ) );
@@ -78,7 +79,6 @@ int main( int argc, const char *argv[] )
     }
 
     // lazy-initialize manager classes
-    config::config_system.emplace().init();
     cheats::actor_manager.emplace( process );
     cheats::esp.emplace( process );
     cheats::utilities.emplace( process );

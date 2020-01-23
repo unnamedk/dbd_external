@@ -2,7 +2,9 @@
 
 #include <array>
 #include <cstdint>
+
 #include "../sdk/color.hpp"
+#include "../cheats/scripts.hpp"
 
 namespace config
 {
@@ -65,7 +67,7 @@ namespace config
 
             sdk::color_t pallet_up_color = sdk::color_t( 0x00aeffffu );
             sdk::color_t pallet_down_color = sdk::color_t::purple();
-            
+
             sdk::color_t hook_color = sdk::color_t::white();
             sdk::color_t chest_color = sdk::color_t::white();
             sdk::color_t locker_color = sdk::color_t::white();
@@ -83,6 +85,11 @@ namespace config
             bool autopallet = true;
             int autopallet_key = 0x5;
         } misc;
+
+        struct
+        {
+            std::vector<cheats::basic_script> script_data;
+        } scripts;
     };
 
     extern options_t options;

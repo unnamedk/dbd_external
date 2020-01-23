@@ -37,8 +37,26 @@ namespace sdk
         pad( 0x10 );
     };
 
-    struct aplayerstate : uobject
+    struct apawn;
+    struct aplayerstate : aactor
     {
+        float score;
+        pad( 0x4 );
+        fstring player_name;
+        pad( 0x10 );
+        int player_id;
+        uint8_t ping;
+        pad( 3 );
+        int start_time;
+        pad( 4 );
+        pad( 20 );
+        fstring saved_network_address;
+        pad( 0x28 );
+        pad( 0x10 );
+        apawn* private_pawn;
+        pad( 0x78 );
+        fstring player_name_private;
+        pad( 8 );
     };
 
     struct aplayercontroller;
@@ -109,7 +127,7 @@ namespace sdk
         pad( 0xc60 );
     };
 
-   /* struct aplayer_camera_manager : aactor
+    /* struct aplayer_camera_manager : aactor
     {
         aplayercontroller *pc_owner;
         uscenecomponent *transform_component;

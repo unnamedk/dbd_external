@@ -12,4 +12,6 @@ namespace ImGui
 	bool SelectKey(const char* label, int* item, const char** arr, int size);
 	bool SliderIntClamped(const char* label, int* v, int v_min, int v_max, const char* display_format = "%.0f");
 	bool SliderFloatClamped(const char* label, float* v, float v_min, float v_max, const char* display_format = "%.3f", float power = 1.0f);
+    void BeginGroupPanel( const char *name, const ImVec2 &size = ImVec2( -1.0f, -1.0f ) );
+    void EndGroupPanel();
 }

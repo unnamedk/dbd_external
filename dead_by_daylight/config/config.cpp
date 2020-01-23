@@ -1,6 +1,8 @@
 #include "config.hpp"
 #include "options.hpp"
 
+#include <streambuf>
+
 #include <shlobj.h>
 #pragma comment( lib, "shell32.lib" )
 
@@ -21,13 +23,21 @@ void settings_manager::init()
     ( configs_path = path_to_docs ) /= ( "Cheat Settings" );
 
     // If the cheat folder doesn't exist, create it
-    if ( !std::filesystem::exists( configs_path ) ) {
-        std::filesystem::create_directory( configs_path );
+    if ( !fs::exists( configs_path ) ) {
+        fs::create_directory( configs_path );
     }
 
     // Use default config file
     auto default_cfg = configs_path / ( "dbd_default_settings.json" );
-    cfg.set_config_file( default_cfg.string() );
+    main_cfg.set_config_file( default_cfg.string() );
+
+    // handle scripts
+    this->scripts_path = configs_path / "dbd_scripts";
+    if ( !fs::exists( this->scripts_path ) ) {
+        fs::create_directory( this->scripts_path );
+    }
+
+    this->populate_scripts();
 
     // Free the allocated memory
     CoTaskMemFree( path_to_docs );
@@ -40,34 +50,42 @@ void config::settings_manager::load()
 {
     const auto load_for = [this]( auto &vec ) {
         for ( auto &opt : vec ) {
-            opt.variable = this->cfg.get_or_insert( opt.default_value, opt.path );
+            opt.variable = this->main_cfg.get_or_insert( opt.default_value, opt.path );
         }
     };
 
-    options.esp.priority_table = this->cfg.get_or_insert( options.esp.priority_table, "esp.priority_table" );
+    options.esp.priority_table = this->main_cfg.get_or_insert( options.esp.priority_table, "esp.priority_table" );
 
     load_for( bools );
     load_for( ints );
     load_for( floats );
     load_for( strings );
     load_for( colors );
+
+    // TODO: need a mutex here
+    config::options.scripts.script_data.clear();
+    this->populate_scripts();
 }
 
 void config::settings_manager::save()
 {
     const auto save_for = [this]( auto &vec ) {
         for ( auto &opt : vec ) {
-            this->cfg.put( opt.variable, opt.path );
+            this->main_cfg.put( opt.variable, opt.path );
         }
     };
-    this->cfg.put( options.esp.priority_table, "esp.priority_table" );
+    this->main_cfg.put( options.esp.priority_table, "esp.priority_table" );
     save_for( bools );
     save_for( ints );
     save_for( floats );
     save_for( strings );
     save_for( colors );
 
-    cfg.save_to_disk();
+    main_cfg.save_to_disk();
+    for ( auto &s : config::options.scripts.script_data ) {
+        std::ofstream ofs( this->scripts_path / s.name(), std::ios::out | std::ios::trunc );
+        ofs << s.data();
+    }
 }
 
 void config::settings_manager::populate_settings()
@@ -98,4 +116,28 @@ void config::settings_manager::populate_settings()
     setup_value( "misc.autoskillcheck_key", config::options.misc.autoskillcheck_key, VK_XBUTTON1 );
     setup_value( "misc.autopallet", config::options.misc.autopallet, false );
     setup_value( "misc.autopallet_key", config::options.misc.autopallet_key, VK_MENU );
+}
+
+void config::settings_manager::populate_scripts()
+{
+    for ( auto &file_iter : fs::directory_iterator { scripts_path } ) {
+        if ( !file_iter.is_regular_file() ) {
+            continue; // skip directories, symlinks, etc
+        }
+
+        fs::path file { file_iter };
+        auto ext = file.extension();
+        if ( !file.has_extension() || (file.extension().compare( L".lua" ) != 0) ) {
+            continue; // read only .lua files
+        }
+
+        std::ifstream stream { file };
+
+        std::string content { std::istreambuf_iterator<char>( stream ), std::istreambuf_iterator<char>() };
+        if ( content.empty() ) {
+            continue;
+        }
+
+        options.scripts.script_data.emplace_back( file.filename().string(), content );
+    }
 }

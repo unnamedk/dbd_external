@@ -61,6 +61,8 @@ namespace cheats
         std::uintptr_t local_actor() { return this->m_local_actor; }
         sdk::ulocalplayer local_player() { return this->m_local_player; }
 
+        auto get_game_state() { return game_state; }
+
     private:
         actor_info parse_actor_info( std::string_view name );
 
@@ -74,6 +76,8 @@ namespace cheats
 
         std::mutex m_name_lock;
         std::unordered_map<std::uint32_t, std::string> m_names;
+
+        sdk::udbd_game_state game_state;
 
         math::vector3 m_local_pos;
         math::qangle m_local_angles;
