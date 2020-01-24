@@ -147,6 +147,9 @@ namespace sdk
         ustillness_tracker *stillness_tracker;
         pad( 0xe0 );
         ucamper_health_component *health_component;
+        pad( 0xe8 );
+        bool is_in_terror_radius;
+        bool trap_indicator_active;
     };
     struct aslasher_player : adbdplayer
     {
@@ -248,6 +251,12 @@ namespace sdk
     struct aitem : ainteractable
     {
         // depends on the item
+    };
+    struct reverse_bear_trap_remover_t : sdk::ainteractable
+    {
+        tarray<int> keys;
+        pad( 0x50 );
+        uintptr_t map_actor;
     };
     struct asearchable : ainteractable
     {

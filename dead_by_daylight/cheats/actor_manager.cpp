@@ -235,7 +235,8 @@ cheats::actor_info cheats::actor_manager_t::parse_actor_info( std::string_view n
     if ( str_compare( name, "BP_BearTrap_001_C", equals ) ||
         str_compare( name, "BearTrap_C", equals ) ||
         str_compare( name, "GroundPortal_C", equals ) ||
-        str_compare( name, "DreamSnare_C", equals ) ) {
+        str_compare( name, "DreamSnare_C", equals ) ||
+        str_compare( name, "BP_ReverseBearTrapRemover", starts_with )) {
         return { "Trap", actor_tag_t::killer_item };
     }
 

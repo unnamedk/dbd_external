@@ -41,6 +41,7 @@ nt::process_kernel wait_process( std::vector<std::wstring_view> name )
 #include <magic_enum.hpp>
 #include <iostream>
 
+#include "cheats/meta.hpp"
 int main( int argc, const char *argv[] )
 {
     using overlay::menu;

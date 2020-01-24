@@ -150,6 +150,9 @@
     <ClCompile Include="cheats\esp.cpp">
       <Filter>Source Files\cheats</Filter>
     </ClCompile>
+    <ClCompile Include="cheats\meta.cpp">
+      <Filter>Source Files\cheats</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format">
@@ -272,6 +275,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cheats\scripts.hpp">
+      <Filter>Header Files\cheats</Filter>
+    </ClInclude>
+    <ClInclude Include="cheats\meta.hpp">
       <Filter>Header Files\cheats</Filter>
     </ClInclude>
   </ItemGroup>

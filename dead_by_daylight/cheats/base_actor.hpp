@@ -188,6 +188,24 @@ namespace cheats
 
     struct trap_t : public base_member<sdk::aitem>
     {
+        bool is_rbt_remover() { return this->m_raw_name.find( "BP_ReverseBearTrapRemover" ) != std::string_view::npos; }
+
+        void set_rbt_remover( const nt::base_process &p )
+        {
+            sdk::reverse_bear_trap_remover_t rbt;
+            if ( p.read( m_base, rbt ) ) {
+                reverse_bear_trap_remover = rbt;
+                std::vector<int> keys_;
+                keys_.resize( rbt.keys.count );
+
+                p.read_ptr( reinterpret_cast<uintptr_t>( rbt.keys.data ), keys_.data(), keys_.size() * sizeof( int ) );
+                keys.emplace( keys_ );
+            }
+        }
+
+        std::optional<sdk::reverse_bear_trap_remover_t> reverse_bear_trap_remover;
+        std::optional < std::vector<int>> keys;
+
         using base_member::base_member;
     };
 }

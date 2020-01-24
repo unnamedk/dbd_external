@@ -8,7 +8,7 @@
 
 std::optional<cheats::utilities_t> cheats::utilities;
 
-#define PALLET_KEY 'F'
+#define PALLET_KEY VK_SPACE
 
 void cheats::utilities_t::run_thread()
 {
