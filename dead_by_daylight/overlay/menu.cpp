@@ -617,7 +617,8 @@ void overlay::menu::draw_changelog_tab()
         std::make_pair( xorstr_( "1.0.0" ), xorstr_( "initial release" ) ),
         std::make_pair( xorstr_( "1.0.1" ), xorstr_( "updated offsets" ) ),
         std::make_pair( xorstr_( "1.0.2" ), xorstr_( "added player list" ) ),
-        std::make_pair( xorstr_( "1.0.3" ), xorstr_( "fixed a few bugs and added rarity indicator to player list" ) )
+        std::make_pair( xorstr_( "1.0.3" ), xorstr_( "fixed a few bugs and added rarity indicator to player list" ) ),
+        std::make_pair( xorstr_( "1.0.4" ), xorstr_( "fixed skillchecks not hitting \"great\" during doctor's madness" ) ),
     };
 
     ImGui::Columns( 2 );

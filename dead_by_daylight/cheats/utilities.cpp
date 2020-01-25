@@ -80,11 +80,22 @@ void cheats::utilities_t::auto_skillcheck( sdk::acamper_player &local_pawn )
         return;
     }
 
-    if ( skillcheck.success_zone_start <= 0.1f ) {
+    if ( skillcheck.success_zone_start <= 0.05f ) {
         return;
     }
 
-    if ( ( skillcheck.current_progress_rate >= skillcheck.success_zone_start ) && ( skillcheck.current_progress_rate <= skillcheck.success_zone_end ) ) {
+    const bool has_passed_bonus_area = skillcheck.current_progress_rate >= ( skillcheck.success_zone_start + skillcheck.bonus_zone_length );
+    const bool can_hit_normal_skillcheck = ( skillcheck.current_progress_rate >= skillcheck.success_zone_start ) && ( skillcheck.current_progress_rate <= skillcheck.success_zone_end );
+
+    // counter-clockwise skillcheck, try to hit only bonus skillchecks
+    if ( !has_passed_bonus_area && can_hit_normal_skillcheck ) {
+        return;
+    }
+
+    const bool is_in_bonus_area = ( skillcheck.current_progress_rate >= ( skillcheck.success_zone_start ) ) &&
+                                  ( skillcheck.current_progress_rate <= ( skillcheck.success_zone_start + skillcheck.bonus_zone_length ) );
+
+    if ( is_in_bonus_area || ( has_passed_bonus_area && can_hit_normal_skillcheck ) ) {
         utils::press_key( VK_SPACE );
     }
 }

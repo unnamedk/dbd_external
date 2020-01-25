@@ -83,6 +83,15 @@ namespace sdk
         pad( 0x48 );
         pad( 0x30 * 3 );
         int perk_level;
+        pad( 0x34 );
+        pad( 0x8 );
+        pad( 0x10 );
+        bool is_usable;
+        bool BroadcastWhenApplicable; // 0x0319(0x0001) (Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData)
+        bool BroadcastOnTimer; // 0x031A(0x0001) (Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData)
+        bool BroadcastCooldownTimer; // 0x031B(0x0001) (Edit, ZeroConstructor, IsPlainOldData)
+        bool BroadcastInactiveCooldownTimer; // 0x031C(0x0001) (Edit, ZeroConstructor, IsPlainOldData)
+        bool BroadcastAlways;  
     };
     struct uperk_collection_component : uactorcomponent
     {
