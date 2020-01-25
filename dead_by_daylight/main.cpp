@@ -1,5 +1,4 @@
 #include <spdlog/sinks/basic_file_sink.h>
-#include <spdlog/sinks/stdout_sinks.h>
 #include <spdlog/async.h>
 #include <spdlog/spdlog.h>
 
@@ -13,15 +12,11 @@
 #include "cheats/esp.hpp"
 #include "cheats/utilities.hpp"
 #include "cheats/actor_manager.hpp"
+#include "cheats/meta.hpp"
 #include "config/config.hpp"
 
 namespace fs = std::filesystem;
 using namespace std::chrono_literals;
-
-#define RETURN_ERROR( fmt, ... )       \
-    spdlog::error( fmt, __VA_ARGS__ ); \
-    ( void ) getchar();                \
-    return 1;
 
 nt::process_kernel wait_process( std::vector<std::wstring_view> name )
 {
@@ -38,10 +33,6 @@ nt::process_kernel wait_process( std::vector<std::wstring_view> name )
     }
 }
 
-#include <magic_enum.hpp>
-#include <iostream>
-
-#include "cheats/meta.hpp"
 int main( int argc, const char *argv[] )
 {
     using overlay::menu;
@@ -70,6 +61,11 @@ int main( int argc, const char *argv[] )
         log->error( xorstr_( "game has invalid base address" ) );
         return 1;
     }
+
+    if ( !cheats::meta::init() ) {
+        log->critical( xorstr_( "no item meta-information file found!" ) );
+    }
+
     spdlog::info( xorstr_( "getting offsets" ) );
     log->info( xorstr_( "getting offsets" ) );
 
@@ -92,7 +88,7 @@ int main( int argc, const char *argv[] )
 
     log->info( xorstr_( "initializing overlay" ) );
     if ( !menu::get().initialize( L"monero miner 1.0" ) ) {
-        log->error( "couldn't initialize menu (last error is {})", GetLastError() );
+        log->error( xorstr_("couldn't initialize menu (last error is {})"), GetLastError() );
         return 1;
     }
 

@@ -107,18 +107,16 @@ math::vector2 math::world_to_radar( const math::vector3 &entity_pos, const math:
     xnew_diff /= scale;
     ynew_diff /= scale;
 
-    xnew_diff = ( iRadarRadius / 2 ) + ( int ) xnew_diff;
-    ynew_diff = ( iRadarRadius / 2 ) + ( int ) ynew_diff;
+    xnew_diff = ( iRadarRadius / 2 ) + static_cast<int>( xnew_diff );
+    ynew_diff = ( iRadarRadius / 2 ) + static_cast<int>( ynew_diff );
 
-    // clamp x & y
-    // FIXME: instead of using hardcoded "4" we should fix cliprect of the radar window
     if ( xnew_diff > iRadarRadius )
-        xnew_diff = iRadarRadius - 4;
+        xnew_diff = static_cast<float>( iRadarRadius - 4 );
     else if ( xnew_diff < 4 )
         xnew_diff = 4;
 
     if ( ynew_diff > iRadarRadius )
-        ynew_diff = iRadarRadius;
+        ynew_diff = static_cast<float>( iRadarRadius );
     else if ( ynew_diff < 4 )
         ynew_diff = 0;
 

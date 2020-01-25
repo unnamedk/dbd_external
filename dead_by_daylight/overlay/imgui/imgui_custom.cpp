@@ -69,11 +69,6 @@ bool ImGui::ColorPicker4( const char *label, uint8_t col[ 4 ], ImGuiColorEditFla
     return result;
 }
 
-bool ImGui::SelectKey(const char* label, int* item, const char** arr, int size)
-{
-	return false;
-}
-
 bool ImGui::SliderIntClamped(const char* label, int* v, int v_min, int v_max, const char* display_format)
 {
 	const auto ret = SliderInt(label, v, v_min, v_max, display_format);

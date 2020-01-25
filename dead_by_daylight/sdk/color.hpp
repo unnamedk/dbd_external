@@ -66,7 +66,7 @@ namespace sdk
         impl_MAKECOLOR( cyan, 0, 255, 255 );
         impl_MAKECOLOR( aquamarine, 127, 255, 212 );
         impl_MAKECOLOR( blue_violet, 138, 43, 226 );
-        impl_MAKECOLOR( brown, 165, 42, 42 );
+        impl_MAKECOLOR( brown, 160, 82, 45 );
         impl_MAKECOLOR( sky_blue, 135, 206, 235 );
         impl_MAKECOLOR( spring_green, 0, 255, 127 );
         impl_MAKECOLOR( tomato, 255, 99, 71 );

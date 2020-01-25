@@ -183,21 +183,64 @@ void cheats::esp_t::draw_player_list()
     ImGui::Text( "offering" );
     ImGui::NextColumn();
 
-    auto players = get_players();
-
     auto &tex = overlay::menu::get().textures();
 
-    auto icon_sz = ImVec2( 40, 40 );
-    int p_index = 0;
+    const auto desired_icon_size = ImVec2( 40, 40 );
+    auto describe_item = [&tex, &desired_icon_size]( std::string_view item_category, const std::string &name, const std::string &item_id ) {
+        const auto has_image = tex.count( item_id ) != 0;
+
+        if ( has_image ) {
+            const auto has_entry = meta::item_entries.count( item_id ) != 0;
+            if ( has_entry ) {
+                const auto &entry = meta::item_entries[ item_id ];
+
+                const auto tooltip = fmt::format( "{}: {}\n\nDescription: {}", item_category, entry.name(), entry.description() );
+
+                auto color = sdk::color_t::brown();
+                switch ( entry.rarity() ) {
+                    case meta::item_rarity::event:
+                        color = sdk::color_t::orange();
+                        break;
+                    case meta::item_rarity::uncommon:
+                        color = sdk::color_t::yellow();
+                        break;
+                    case meta::item_rarity::rare:
+                        color = sdk::color_t::spring_green();
+                        break;
+                    case meta::item_rarity::very_rare:
+                        color = sdk::color_t::purple();
+                        break;
+                    case meta::item_rarity::ultra_rare:
+                        color = sdk::color_t::magenta();
+                        break;
+                    default:
+                        color = sdk::color_t::white();
+                        break;
+                }
+                  
+                ImGui::Image( tex[ item_id ], desired_icon_size, {}, { 1, 1 }, ImVec4( color.clamped_r(), color.clamped_g(), color.clamped_b(), 1.f ), {} );
+                set_tooltip( std::data( tooltip ) );
+            } else {
+                ImGui::Image( tex[ item_id ], desired_icon_size );
+                set_tooltip( name.data() );
+            }
+        } else {
+            ImGui::Text( " %s ", name.data() );
+        }
+    };
+
+    int prop_id = 0;
+
+    auto players = get_players();
     for ( auto &p : players ) {
-        ImGui::Image( tex[ p.icon_name ], icon_sz );
+        ImGui::Image( tex[ p.icon_name ], desired_icon_size );
         ImGui::NextColumn();
 
         auto plat_id = nt::utils::narrow( p.platform_id );
         auto url = fmt::format( "https://steamcommunity.com/profiles/{}", plat_id );
 
-        ImGui::PushID( p_index++ );
-        if ( ImGui::ImageButton( tex[ "paste" ], icon_sz ) ) {
+        ImGui::PushID( prop_id++ );
+        if ( ImGui::ImageButton( tex[ "paste" ], desired_icon_size ) ) {
             if ( OpenClipboard( nullptr ) ) {
                 auto mem = GlobalAlloc( GMEM_MOVEABLE, url.size() + 1 );
                 memcpy( GlobalLock( mem ), url.data(), url.size() + 1 );
@@ -227,23 +270,8 @@ void cheats::esp_t::draw_player_list()
         };
 
         for ( int i = 0; i < p.perks.size(); ++i ) {
-            auto ico_str = str_to_icon( p.perks[ i ].name() );
-
-            if ( tex.count( ico_str ) != 0 ) {
-                ImGui::Image( tex[ ico_str ], icon_sz );
-
-                if ( meta::item_entries.count( ico_str ) != 0 ) {
-                    auto &entry = meta::item_entries[ ico_str ];
-                    auto tooltip = fmt::format( "Perk name: {}\n\nDescription: {}", entry.name(), entry.description() );
-
-                    set_tooltip( tooltip.data() );
-                } else {
-                    set_tooltip( p.perks[ i ].name().data() );
-                }
-            } else {
-                ImGui::Text( " %s ", p.perks[ i ].name().data() );
-            }
-
+            const auto item_id = str_to_icon( p.perks[ i ].name() );
+            describe_item( "Perk", p.perks[ i ].name(), item_id );
             if ( i != ( p.perks.size() - 1 ) ) {
                 ImGui::SameLine();
             }
@@ -251,45 +279,14 @@ void cheats::esp_t::draw_player_list()
         ImGui::NextColumn();
 
         {
-            auto ico_str = str_to_icon( p.power );
-
-            if ( tex.count( ico_str ) != 0 ) {
-                ImGui::Image( tex[ ico_str ], icon_sz );
-
-                if ( meta::item_entries.count( ico_str ) != 0 ) {
-                    auto &entry = meta::item_entries[ ico_str ];
-                    auto tooltip = fmt::format( "Power name: {}\n\nDescription: {}", entry.name(), entry.description() );
-
-                    set_tooltip( tooltip.data() );
-                } else {
-                    set_tooltip( p.power.data() );
-                }
-
-            } else {
-                ImGui::Text( p.power.data() );
-            }
+            const auto item_id = str_to_icon( p.power );
+            describe_item( "Item", p.power, item_id );
         }
         ImGui::NextColumn();
 
         for ( int i = 0; i < p.addons.size(); ++i ) {
-            auto ico_str = str_to_icon( p.addons[ i ] );
-
-            if ( tex.count( ico_str ) != 0 ) {
-                ImGui::Image( tex[ ico_str ], icon_sz );
-
-                if ( meta::item_entries.count( ico_str ) != 0 ) {
-                    auto &entry = meta::item_entries[ ico_str ];
-                    auto tooltip = fmt::format( "Addon name: {}\n\nDescription: {}", entry.name(), entry.description() );
-
-                    set_tooltip( tooltip.data() );
-                } else {
-                    set_tooltip( p.addons[ i ].data() );
-                }
-            } else {
-                ImGui::Text( " %s ", p.addons[ i ].data() );
-                ImGui::SameLine();
-            }
-
+            const auto item_id = str_to_icon( p.addons[ i ] );
+            describe_item( "Add-on", p.addons[ i ], item_id );
             if ( i != ( p.addons.size() - 1 ) ) {
                 ImGui::SameLine();
             }
@@ -297,22 +294,8 @@ void cheats::esp_t::draw_player_list()
         ImGui::NextColumn();
 
         {
-            auto ico_str = str_to_icon( p.offering );
-
-            if ( tex.count( ico_str ) != 0 ) {
-                ImGui::Image( tex[ ico_str ], icon_sz );
-
-                if ( meta::item_entries.count( ico_str ) != 0 ) {
-                    auto &entry = meta::item_entries[ ico_str ];
-                    auto tooltip = fmt::format( "Offering name: {}\n\nDescription: {}", entry.name(), entry.description() );
-
-                    set_tooltip( tooltip.data() );
-                } else {
-                    set_tooltip( p.offering.data() );
-                }
-            } else {
-                ImGui::Text( p.offering.data() );
-            }
+            const auto item_id = str_to_icon( p.offering );
+            describe_item( "Offering", p.offering, item_id );
         }
         ImGui::NextColumn();
     }
@@ -364,7 +347,7 @@ void cheats::esp_t::draw_radar()
             return; // texture not found but object still wants to be drawn. maybe use a fallback image?
         }
 
-        auto screen_pos = math::world_to_radar( actor->component().relative_location, actor_manager->local_pos(), actor_manager->local_angles(), winsize.x, config::options.esp.radar_zoom );
+        auto screen_pos = math::world_to_radar( actor->component().relative_location, actor_manager->local_pos(), actor_manager->local_angles(), static_cast<int>( winsize.x ), config::options.esp.radar_zoom );
         if ( screen_pos.is_zero() ) {
             return;
         }
@@ -481,7 +464,7 @@ bool cheats::esp_t::should_draw_actor( cheats::actor_t *actor )
         case actor_tag_t::totem:
             return ( config::options.esp.filter_flags & config::totems ) && !( reinterpret_cast<cheats::totem_t *>( actor )->inner().is_cleansed ) && ( !config::options.esp.hide_dull_totems || ( reinterpret_cast<cheats::totem_t *>( actor )->inner().hex_perk_id.number != 0 ) );
         case actor_tag_t::survivor:
-            return ( config::options.esp.filter_flags & config::survivors ) /*&& ( actor->base() != actor_manager->local_actor() )*/;
+            return ( config::options.esp.filter_flags & config::survivors ) && ( actor->base() != actor_manager->local_actor() );
         case actor_tag_t::killer:
             return ( config::options.esp.filter_flags & config::killers ) && ( actor->base() != actor_manager->local_actor() );
 

@@ -10,7 +10,7 @@ void utils::press_key( std::uint16_t code, std::uint32_t time ) noexcept
 {
     INPUT i {};
     i.type = INPUT_KEYBOARD;
-    i.ki.wScan = MapVirtualKey( code, MAPVK_VK_TO_VSC );
+    i.ki.wScan = MapVirtualKey( static_cast<std::uint32_t>(code), MAPVK_VK_TO_VSC );
     i.ki.time = time;
     i.ki.dwExtraInfo = 0;
     i.ki.wVk = code;

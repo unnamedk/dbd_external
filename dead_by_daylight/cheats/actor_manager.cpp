@@ -236,12 +236,9 @@ cheats::actor_info cheats::actor_manager_t::parse_actor_info( std::string_view n
         str_compare( name, "BearTrap_C", equals ) ||
         str_compare( name, "GroundPortal_C", equals ) ||
         str_compare( name, "DreamSnare_C", equals ) ||
-        str_compare( name, "BP_ReverseBearTrapRemover", starts_with )) {
+        str_compare( name, "BP_PhantomTrap_C", equals ) ||
+        str_compare( name, "BP_ReverseBearTrapRemover", starts_with ) ) {
         return { "Trap", actor_tag_t::killer_item };
-    }
-
-    if ( str_compare( name, "BP_PhantomTrap_C", equals ) ) {
-        return { "Phantom Trap", actor_tag_t::killer_item };
     }
 
     if ( str_compare( name, "BP_Hatch01_C", equals ) ||
