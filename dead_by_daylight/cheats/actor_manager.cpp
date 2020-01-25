@@ -2,6 +2,7 @@
 #include "offsets.hpp"
 #include "../config/options.hpp"
 #include <thread>
+#include <fstream>
 
 std::optional<cheats::actor_manager_t> cheats::actor_manager;
 
@@ -46,7 +47,7 @@ void cheats::actor_manager_t::run_thread()
             continue;
         }
 
-        this->m_process.read( reinterpret_cast<std::uintptr_t>(world.game_state), game_state );
+        this->m_process.read( reinterpret_cast<std::uintptr_t>( world.game_state ), game_state );
 
         sdk::ulevel level;
         if ( !this->m_process.read( reinterpret_cast<std::uintptr_t>( world.level ), level ) ) {
@@ -228,6 +229,22 @@ void cheats::actor_manager_t::update_names()
             this->m_names[ name_object.index / 2 ] = name_object.ansi_name;
         }
     }
+}
+
+void cheats::actor_manager_t::dump_names() noexcept
+{
+    std::ofstream ofs( "names.txt" );
+
+    std::unique_lock lock { this->m_name_lock };
+    for ( auto &[ i, name ] : this->m_names ) {
+        if ( name.empty() ) {
+            continue;
+        }
+
+        ofs << i << ": " << name << '\n';
+    }
+
+    ofs << std::endl;
 }
 
 cheats::actor_info cheats::actor_manager_t::parse_actor_info( std::string_view name )

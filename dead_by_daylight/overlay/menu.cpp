@@ -279,32 +279,36 @@ void overlay::menu::cleanup_render_target()
 void overlay::menu::draw_menu()
 {
     ImGui::SetNextWindowSize( ImVec2( 480, 500 ), ImGuiCond_FirstUseEver );
-    if ( !ImGui::Begin( xorstr_("keylogger manager v3"), nullptr, ImGuiWindowFlags_NoCollapse ) ) {
+    if ( !ImGui::Begin( xorstr_( "keylogger manager v3" ), nullptr, ImGuiWindowFlags_NoCollapse ) ) {
         ImGui::End();
         return;
     }
 
     if ( ImGui::BeginMainMenuBar() ) {
-        if ( ImGui::BeginMenu( ( xorstr_("settings") ) ) ) {
-            if ( ImGui::MenuItem( ( ( xorstr_("save config") ) ) ) ) {
+        if ( ImGui::BeginMenu( ( xorstr_( "settings" ) ) ) ) {
+            if ( ImGui::MenuItem( ( ( xorstr_( "save config" ) ) ) ) ) {
                 config::config_system->save();
             }
 
-            if ( ImGui::MenuItem( ( xorstr_("load config") ) ) ) {
+            if ( ImGui::MenuItem( ( xorstr_( "load config" ) ) ) ) {
                 config::config_system->load();
             }
 
             ImGui::EndMenu();
         }
 
-        if ( ImGui::BeginMenu( ( xorstr_("cheat") ) ) ) {
-            if ( ImGui::MenuItem( ( ( xorstr_("re-cache gnames") ) ) ) ) {
+        if ( ImGui::BeginMenu( ( xorstr_( "cheat" ) ) ) ) {
+            if ( ImGui::MenuItem( ( ( xorstr_( "re-cache gnames" ) ) ) ) ) {
                 cheats::actor_manager->update_names();
             }
 
-            if ( ImGui::MenuItem( ( xorstr_("reload textures") ) ) ) {
+            if ( ImGui::MenuItem( ( xorstr_( "reload textures" ) ) ) ) {
                 this->m_textures.clear();
                 this->load_textures();
+            }
+
+            if ( ImGui::MenuItem( ( xorstr_( "dump names to file" ) ) ) ) {
+                cheats::actor_manager->dump_names();
             }
 
             ImGui::EndMenu();
@@ -313,20 +317,20 @@ void overlay::menu::draw_menu()
         ImGui::EndMainMenuBar();
     }
 
-    if ( ImGui::BeginTabBar( xorstr_("assistances"), ImGuiTabBarFlags_Reorderable ) ) {
-        if ( ImGui::BeginTabItem( xorstr_("esp") ) ) {
+    if ( ImGui::BeginTabBar( xorstr_( "assistances" ), ImGuiTabBarFlags_Reorderable ) ) {
+        if ( ImGui::BeginTabItem( xorstr_( "esp" ) ) ) {
             draw_esp_tab();
             ImGui::EndTabItem();
         }
-        if ( ImGui::BeginTabItem( xorstr_("misc") ) ) {
+        if ( ImGui::BeginTabItem( xorstr_( "misc" ) ) ) {
             draw_misc_tab();
             ImGui::EndTabItem();
         }
-        if ( ImGui::BeginTabItem( xorstr_("colors") ) ) {
+        if ( ImGui::BeginTabItem( xorstr_( "colors" ) ) ) {
             draw_colors_tab();
             ImGui::EndTabItem();
         }
-        if ( ImGui::BeginTabItem( xorstr_("player list") ) ) {
+        if ( ImGui::BeginTabItem( xorstr_( "player list" ) ) ) {
             draw_player_list();
             ImGui::EndTabItem();
         }
@@ -334,7 +338,7 @@ void overlay::menu::draw_menu()
             draw_scripts_tab();
             ImGui::EndTabItem();
         }*/
-        if ( ImGui::BeginTabItem( xorstr_("changelog") ) ) {
+        if ( ImGui::BeginTabItem( xorstr_( "changelog" ) ) ) {
             draw_changelog_tab();
             ImGui::EndTabItem();
         }
@@ -347,94 +351,94 @@ void overlay::menu::draw_menu()
 
 void overlay::menu::draw_colors_tab()
 {
-    ImGui::BeginChild( xorstr_("colors") );
+    ImGui::BeginChild( xorstr_( "colors" ) );
     constexpr auto flags = ImGuiColorEditFlags_Float | ImGuiColorEditFlags_AlphaBar;
 
-    ImGui::ColorEdit4( xorstr_("dull totem"), config::options.esp.dull_totem_color.data(), flags );
-    ImGui::ColorEdit4( xorstr_("hex totem"), config::options.esp.hex_totem_color.data(), flags );
-    ImGui::ColorEdit4( xorstr_("closed hatch"), config::options.esp.hatch_closed_color.data(), flags );
-    ImGui::ColorEdit4( xorstr_("open hatch"), config::options.esp.hatch_open_color.data(), flags );
-    ImGui::ColorEdit4( xorstr_("closed door"), config::options.esp.door_closed_color.data(), flags );
-    ImGui::ColorEdit4( xorstr_("open door"), config::options.esp.door_open_color.data(), flags );
-    ImGui::ColorEdit4( xorstr_("up pallet"), config::options.esp.pallet_up_color.data(), flags );
-    ImGui::ColorEdit4( xorstr_("downed pallet"), config::options.esp.pallet_down_color.data(), flags );
-    ImGui::ColorEdit4( xorstr_("hook"), config::options.esp.hook_color.data(), flags );
-    ImGui::ColorEdit4( xorstr_("chest"), config::options.esp.chest_color.data(), flags );
-    ImGui::ColorEdit4( xorstr_("locker"), config::options.esp.locker_color.data(), flags );
-    ImGui::ColorEdit4( xorstr_("trap"), config::options.esp.trap_color.data(), flags );
+    ImGui::ColorEdit4( xorstr_( "dull totem" ), config::options.esp.dull_totem_color.data(), flags );
+    ImGui::ColorEdit4( xorstr_( "hex totem" ), config::options.esp.hex_totem_color.data(), flags );
+    ImGui::ColorEdit4( xorstr_( "closed hatch" ), config::options.esp.hatch_closed_color.data(), flags );
+    ImGui::ColorEdit4( xorstr_( "open hatch" ), config::options.esp.hatch_open_color.data(), flags );
+    ImGui::ColorEdit4( xorstr_( "closed door" ), config::options.esp.door_closed_color.data(), flags );
+    ImGui::ColorEdit4( xorstr_( "open door" ), config::options.esp.door_open_color.data(), flags );
+    ImGui::ColorEdit4( xorstr_( "up pallet" ), config::options.esp.pallet_up_color.data(), flags );
+    ImGui::ColorEdit4( xorstr_( "downed pallet" ), config::options.esp.pallet_down_color.data(), flags );
+    ImGui::ColorEdit4( xorstr_( "hook" ), config::options.esp.hook_color.data(), flags );
+    ImGui::ColorEdit4( xorstr_( "chest" ), config::options.esp.chest_color.data(), flags );
+    ImGui::ColorEdit4( xorstr_( "locker" ), config::options.esp.locker_color.data(), flags );
+    ImGui::ColorEdit4( xorstr_( "trap" ), config::options.esp.trap_color.data(), flags );
 
-    ImGui::BeginChild( xorstr_("icons_preview"), {}, true );
+    ImGui::BeginChild( xorstr_( "icons_preview" ), {}, true );
     auto preview_icon = [this]( const std::string &name, sdk::color_t clr ) {
         ImGui::Image( this->m_textures[ name ], ImVec2( 50, 50 ), { 0, 0 }, { 1, 1 }, ImVec4( clr.clamped_r(), clr.clamped_g(), clr.clamped_b(), clr.clamped_a() ), {} );
     };
 
     {
-        preview_icon( xorstr_("totem"), config::options.esp.dull_totem_color );
+        preview_icon( xorstr_( "totem" ), config::options.esp.dull_totem_color );
         ImGui::SameLine();
-        preview_icon( xorstr_("noed"), config::options.esp.hex_totem_color );
+        preview_icon( xorstr_( "noed" ), config::options.esp.hex_totem_color );
         ImGui::SameLine();
-        preview_icon( xorstr_("ruin"), config::options.esp.hex_totem_color );
+        preview_icon( xorstr_( "ruin" ), config::options.esp.hex_totem_color );
         ImGui::SameLine();
-        preview_icon( xorstr_("third_seal"), config::options.esp.hex_totem_color );
+        preview_icon( xorstr_( "third_seal" ), config::options.esp.hex_totem_color );
         ImGui::SameLine();
-        preview_icon( xorstr_("thrill"), config::options.esp.hex_totem_color );
+        preview_icon( xorstr_( "thrill" ), config::options.esp.hex_totem_color );
         ImGui::SameLine();
-        preview_icon( xorstr_("hauntedground"), config::options.esp.hex_totem_color );
+        preview_icon( xorstr_( "hauntedground" ), config::options.esp.hex_totem_color );
         ImGui::SameLine();
-        preview_icon( xorstr_("huntresslullaby"), config::options.esp.hex_totem_color );
+        preview_icon( xorstr_( "huntresslullaby" ), config::options.esp.hex_totem_color );
     }
 
     {
-        preview_icon( xorstr_("hatch"), config::options.esp.hatch_closed_color );
+        preview_icon( xorstr_( "hatch" ), config::options.esp.hatch_closed_color );
         ImGui::SameLine();
 
-        preview_icon( xorstr_("hatch"), config::options.esp.hatch_open_color );
+        preview_icon( xorstr_( "hatch" ), config::options.esp.hatch_open_color );
         ImGui::SameLine();
 
-        preview_icon( xorstr_("door"), config::options.esp.door_closed_color );
+        preview_icon( xorstr_( "door" ), config::options.esp.door_closed_color );
         ImGui::SameLine();
 
-        preview_icon( xorstr_("door"), config::options.esp.door_open_color );
+        preview_icon( xorstr_( "door" ), config::options.esp.door_open_color );
     }
 
     {
-        preview_icon( xorstr_("pallet"), config::options.esp.pallet_up_color );
+        preview_icon( xorstr_( "pallet" ), config::options.esp.pallet_up_color );
         ImGui::SameLine();
 
-        preview_icon( xorstr_("pallet"), config::options.esp.pallet_down_color );
+        preview_icon( xorstr_( "pallet" ), config::options.esp.pallet_down_color );
     }
 
     {
-        preview_icon( xorstr_("hillbilly"), sdk::color_t::white() );
+        preview_icon( xorstr_( "hillbilly" ), sdk::color_t::white() );
         ImGui::SameLine();
-        preview_icon( xorstr_("freddy"), sdk::color_t::white() );
+        preview_icon( xorstr_( "freddy" ), sdk::color_t::white() );
         ImGui::SameLine();
-        preview_icon( xorstr_("doctor"), sdk::color_t::white() );
+        preview_icon( xorstr_( "doctor" ), sdk::color_t::white() );
         ImGui::SameLine();
-        preview_icon( xorstr_("bubba"), sdk::color_t::white() );
+        preview_icon( xorstr_( "bubba" ), sdk::color_t::white() );
     }
 
     {
-        preview_icon( xorstr_("meg_thomas"), sdk::color_t::white() );
+        preview_icon( xorstr_( "meg_thomas" ), sdk::color_t::white() );
         ImGui::SameLine();
-        preview_icon( xorstr_("dwight_fairfield"), sdk::color_t::white() );
+        preview_icon( xorstr_( "dwight_fairfield" ), sdk::color_t::white() );
         ImGui::SameLine();
-        preview_icon( xorstr_("nea_karlsson"), sdk::color_t::white() );
+        preview_icon( xorstr_( "nea_karlsson" ), sdk::color_t::white() );
         ImGui::SameLine();
-        preview_icon( xorstr_("yui_kimura"), sdk::color_t::white() );
+        preview_icon( xorstr_( "yui_kimura" ), sdk::color_t::white() );
     }
 
     {
-        preview_icon( xorstr_("hook"), config::options.esp.hook_color );
+        preview_icon( xorstr_( "hook" ), config::options.esp.hook_color );
         ImGui::SameLine();
 
-        preview_icon( xorstr_("chest"), config::options.esp.chest_color );
+        preview_icon( xorstr_( "chest" ), config::options.esp.chest_color );
         ImGui::SameLine();
 
-        preview_icon( xorstr_("locker"), config::options.esp.locker_color );
+        preview_icon( xorstr_( "locker" ), config::options.esp.locker_color );
         ImGui::SameLine();
 
-        preview_icon( xorstr_("trap"), config::options.esp.trap_color );
+        preview_icon( xorstr_( "trap" ), config::options.esp.trap_color );
     }
 
     ImGui::EndChild();
@@ -444,51 +448,51 @@ void overlay::menu::draw_colors_tab()
 
 void overlay::menu::draw_esp_tab()
 {
-    ImGui::BeginChild( xorstr_("esp_tab") );
-    ImGui::Text( xorstr_("esp") );
+    ImGui::BeginChild( xorstr_( "esp_tab" ) );
+    ImGui::Text( xorstr_( "esp" ) );
     ImGui::Separator();
 
-    ImGui::Checkbox( xorstr_("enabled"), &config::options.esp.enabled );
-    ImGui::Checkbox( xorstr_("debug mode"), &config::options.esp.debug_mode );
+    ImGui::Checkbox( xorstr_( "enabled" ), &config::options.esp.enabled );
+    ImGui::Checkbox( xorstr_( "debug mode" ), &config::options.esp.debug_mode );
     ImGui::Separator();
 
-    ImGui::SelectableFlags( xorstr_("killer"), &config::options.esp.filter_flags, config::killers );
-    ImGui::SelectableFlags( xorstr_("survivor"), &config::options.esp.filter_flags, config::survivors );
-    ImGui::SelectableFlags( xorstr_("totem"), &config::options.esp.filter_flags, config::totems );
-    ImGui::SelectableFlags( xorstr_("hatch"), &config::options.esp.filter_flags, config::hatches );
-    ImGui::SelectableFlags( xorstr_("pallets"), &config::options.esp.filter_flags, config::pallets );
+    ImGui::SelectableFlags( xorstr_( "killer" ), &config::options.esp.filter_flags, config::killers );
+    ImGui::SelectableFlags( xorstr_( "survivor" ), &config::options.esp.filter_flags, config::survivors );
+    ImGui::SelectableFlags( xorstr_( "totem" ), &config::options.esp.filter_flags, config::totems );
+    ImGui::SelectableFlags( xorstr_( "hatch" ), &config::options.esp.filter_flags, config::hatches );
+    ImGui::SelectableFlags( xorstr_( "pallets" ), &config::options.esp.filter_flags, config::pallets );
 
-    ImGui::SelectableFlags( xorstr_("doors"), &config::options.esp.filter_flags, config::doors );
-    ImGui::SelectableFlags( xorstr_("generators"), &config::options.esp.filter_flags, config::generators );
-    ImGui::SelectableFlags( xorstr_("chests"), &config::options.esp.filter_flags, config::chests );
-    ImGui::SelectableFlags( xorstr_("items"), &config::options.esp.filter_flags, config::items );
-    ImGui::SelectableFlags( xorstr_("hooks"), &config::options.esp.filter_flags, config::hooks );
-    ImGui::SelectableFlags( xorstr_("lockers"), &config::options.esp.filter_flags, config::lockers );
+    ImGui::SelectableFlags( xorstr_( "doors" ), &config::options.esp.filter_flags, config::doors );
+    ImGui::SelectableFlags( xorstr_( "generators" ), &config::options.esp.filter_flags, config::generators );
+    ImGui::SelectableFlags( xorstr_( "chests" ), &config::options.esp.filter_flags, config::chests );
+    ImGui::SelectableFlags( xorstr_( "items" ), &config::options.esp.filter_flags, config::items );
+    ImGui::SelectableFlags( xorstr_( "hooks" ), &config::options.esp.filter_flags, config::hooks );
+    ImGui::SelectableFlags( xorstr_( "lockers" ), &config::options.esp.filter_flags, config::lockers );
 
     ImGui::Separator();
-    ImGui::Checkbox( xorstr_("hide dull totems"), &config::options.esp.hide_dull_totems );
-    ImGui::Checkbox( xorstr_("render icons"), &config::options.esp.radar_preview_icons );
-    ImGui::SliderFloat( xorstr_("icon scale"), &config::options.esp.radar_icon_scale, 3.f, 10.f );
-    ImGui::SliderFloat( xorstr_("image size"), &config::options.esp.radar_image_size, 5.f, 100.f );
-    ImGui::SliderFloat( xorstr_("radar zoom"), &config::options.esp.radar_zoom, 2.f, 50.f );
+    ImGui::Checkbox( xorstr_( "hide dull totems" ), &config::options.esp.hide_dull_totems );
+    ImGui::Checkbox( xorstr_( "render icons" ), &config::options.esp.radar_preview_icons );
+    ImGui::SliderFloat( xorstr_( "icon scale" ), &config::options.esp.radar_icon_scale, 3.f, 10.f );
+    ImGui::SliderFloat( xorstr_( "image size" ), &config::options.esp.radar_image_size, 5.f, 100.f );
+    ImGui::SliderFloat( xorstr_( "radar zoom" ), &config::options.esp.radar_zoom, 2.f, 50.f );
 
-    if ( ImGui::CollapsingHeader( xorstr_("priorities") ) ) {
+    if ( ImGui::CollapsingHeader( xorstr_( "priorities" ) ) ) {
         int id = 0;
         auto make_priority_button = [&id]( const char *name, int &priority ) {
-            ImGui::Text( xorstr_("%s"), name );
+            ImGui::Text( xorstr_( "%s" ), name );
             ImGui::NextColumn();
 
             ImGui::PushID( id++ );
 
-            if ( ImGui::ArrowButton( xorstr_("#left"), ImGuiDir_Left ) ) {
+            if ( ImGui::ArrowButton( xorstr_( "#left" ), ImGuiDir_Left ) ) {
                 priority = std::max( priority - 1, 0 );
             }
 
             ImGui::SameLine();
-            ImGui::Text( xorstr_("%i"), priority );
+            ImGui::Text( xorstr_( "%i" ), priority );
 
             ImGui::SameLine();
-            if ( ImGui::ArrowButton( xorstr_("#right"), ImGuiDir_Right ) ) {
+            if ( ImGui::ArrowButton( xorstr_( "#right" ), ImGuiDir_Right ) ) {
                 priority = std::min( 10, priority + 1 );
             }
 
@@ -498,46 +502,47 @@ void overlay::menu::draw_esp_tab()
 
         ImGui::Columns( 2 );
         ImGui::Separator();
-        ImGui::Text( xorstr_("type") );
+        ImGui::Text( xorstr_( "type" ) );
         ImGui::NextColumn();
-        ImGui::Text( xorstr_("priority") );
+        ImGui::Text( xorstr_( "priority" ) );
         ImGui::NextColumn();
 
-        make_priority_button( xorstr_("survivors"), config::options.esp.priority_table[ 1 ] );
-        make_priority_button( xorstr_("killers"), config::options.esp.priority_table[ 2 ] );
-        make_priority_button( xorstr_("items"), config::options.esp.priority_table[ 3 ] );
-        make_priority_button( xorstr_("killer traps"), config::options.esp.priority_table[ 4 ] );
-        make_priority_button( xorstr_("generators"), config::options.esp.priority_table[ 5 ] );
-        make_priority_button( xorstr_("hatches"), config::options.esp.priority_table[ 6 ] );
-        make_priority_button( xorstr_("doors"), config::options.esp.priority_table[ 7 ] );
-        make_priority_button( xorstr_("totems"), config::options.esp.priority_table[ 8 ] );
-        make_priority_button( xorstr_("lockers"), config::options.esp.priority_table[ 9 ] );
-        make_priority_button( xorstr_("hooks"), config::options.esp.priority_table[ 10 ] );
-        make_priority_button( xorstr_("pallets"), config::options.esp.priority_table[ 11 ] );
-        make_priority_button( xorstr_("chests"), config::options.esp.priority_table[ 12 ] );
-        make_priority_button( xorstr_("unknown"), config::options.esp.priority_table[ 0 ] );
+        make_priority_button( xorstr_( "survivors" ), config::options.esp.priority_table[ 1 ] );
+        make_priority_button( xorstr_( "killers" ), config::options.esp.priority_table[ 2 ] );
+        make_priority_button( xorstr_( "items" ), config::options.esp.priority_table[ 3 ] );
+        make_priority_button( xorstr_( "killer traps" ), config::options.esp.priority_table[ 4 ] );
+        make_priority_button( xorstr_( "generators" ), config::options.esp.priority_table[ 5 ] );
+        make_priority_button( xorstr_( "hatches" ), config::options.esp.priority_table[ 6 ] );
+        make_priority_button( xorstr_( "doors" ), config::options.esp.priority_table[ 7 ] );
+        make_priority_button( xorstr_( "totems" ), config::options.esp.priority_table[ 8 ] );
+        make_priority_button( xorstr_( "lockers" ), config::options.esp.priority_table[ 9 ] );
+        make_priority_button( xorstr_( "hooks" ), config::options.esp.priority_table[ 10 ] );
+        make_priority_button( xorstr_( "pallets" ), config::options.esp.priority_table[ 11 ] );
+        make_priority_button( xorstr_( "chests" ), config::options.esp.priority_table[ 12 ] );
+        make_priority_button( xorstr_( "unknown" ), config::options.esp.priority_table[ 0 ] );
     }
 
-    if ( cheats::esp ) { 
+    if ( cheats::esp ) {
         cheats::esp->run();
     }
 
     ImGui::EndChild();
 }
 
+
 void overlay::menu::draw_misc_tab()
 {
-    ImGui::BeginChild( xorstr_("misc_tab"), {}, true );
-    ImGui::Text( xorstr_("misc") );
+    ImGui::BeginChild( xorstr_( "misc_tab" ), {}, true );
+    ImGui::Text( xorstr_( "misc" ) );
     ImGui::Separator();
 
-    ImGui::Checkbox( xorstr_("auto skillcheck"), &config::options.misc.autoskillcheck );
+    ImGui::Checkbox( xorstr_( "auto skillcheck" ), &config::options.misc.autoskillcheck );
     if ( config::options.misc.autoskillcheck ) {
-        ImGui::Combo( xorstr_("auto skillcheck key"), &config::options.misc.autoskillcheck_key, config::keys_list.data(), config::keys_list.size() );
+        ImGui::Combo( xorstr_( "auto skillcheck key" ), &config::options.misc.autoskillcheck_key, config::keys_list.data(), config::keys_list.size() );
     }
-    ImGui::Checkbox( xorstr_("auto pallet"), &config::options.misc.autopallet );
+    ImGui::Checkbox( xorstr_( "auto pallet" ), &config::options.misc.autopallet );
     if ( config::options.misc.autopallet ) {
-        ImGui::Combo( xorstr_("auto pallet key"), &config::options.misc.autopallet_key, config::keys_list.data(), config::keys_list.size() );
+        ImGui::Combo( xorstr_( "auto pallet key" ), &config::options.misc.autopallet_key, config::keys_list.data(), config::keys_list.size() );
     }
 
     ImGui::EndChild();
@@ -597,7 +602,7 @@ void overlay::menu::draw_scripts_tab()
 
 void overlay::menu::draw_player_list()
 {
-    ImGui::BeginChild(xorstr_("player_list_tab"));
+    ImGui::BeginChild( xorstr_( "player_list_tab" ) );
     if ( cheats::esp ) {
         cheats::esp->draw_player_list();
     }
@@ -606,27 +611,27 @@ void overlay::menu::draw_player_list()
 
 void overlay::menu::draw_changelog_tab()
 {
-    ImGui::BeginChild( xorstr_("changelog_tab"), {}, true );
+    ImGui::BeginChild( xorstr_( "changelog_tab" ), {}, true );
 
     static std::array changelist {
-        std::make_pair( xorstr_("1.0.0"), xorstr_("initial release") ),
-        std::make_pair( xorstr_("1.0.1"), xorstr_("updated offsets") ),
-        std::make_pair( xorstr_("1.0.2"), xorstr_("added player list") ),
-        std::make_pair( xorstr_("1.0.3"), xorstr_("fixed a few bugs and added rarity indicator to player list") )
+        std::make_pair( xorstr_( "1.0.0" ), xorstr_( "initial release" ) ),
+        std::make_pair( xorstr_( "1.0.1" ), xorstr_( "updated offsets" ) ),
+        std::make_pair( xorstr_( "1.0.2" ), xorstr_( "added player list" ) ),
+        std::make_pair( xorstr_( "1.0.3" ), xorstr_( "fixed a few bugs and added rarity indicator to player list" ) )
     };
 
     ImGui::Columns( 2 );
     ImGui::Separator();
-    ImGui::Text( xorstr_("version") );
+    ImGui::Text( xorstr_( "version" ) );
     ImGui::NextColumn();
-    ImGui::Text( xorstr_("changes") );
+    ImGui::Text( xorstr_( "changes" ) );
     ImGui::NextColumn();
 
     for ( auto &[ v, t ] : changelist ) {
-        ImGui::Text( xorstr_("%s\n"), v );
+        ImGui::Text( xorstr_( "%s\n" ), v );
         ImGui::NextColumn();
 
-        ImGui::Text( xorstr_("%s\n"), t );
+        ImGui::Text( xorstr_( "%s\n" ), t );
         ImGui::NextColumn();
     }
 

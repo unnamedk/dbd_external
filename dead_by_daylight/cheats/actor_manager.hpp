@@ -61,7 +61,18 @@ namespace cheats
         std::uintptr_t local_actor() { return this->m_local_actor; }
         sdk::ulocalplayer local_player() { return this->m_local_player; }
 
+        std::optional<sdk::aplayercontroller> local_controller()
+        {
+            sdk::aplayercontroller ans;
+            if ( !this->m_process.read( uintptr_t( m_local_player.player_controller ), ans ) ) {
+                return std::nullopt;
+            }
+
+            return ans;
+        }
+
         auto get_game_state() { return game_state; }
+        void dump_names() noexcept;
 
     private:
         actor_info parse_actor_info( std::string_view name );
