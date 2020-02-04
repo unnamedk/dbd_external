@@ -271,14 +271,14 @@
     <ClInclude Include="cheats\utilities.hpp">
       <Filter>Header Files\cheats</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="cheats\scripts.hpp">
       <Filter>Header Files\cheats</Filter>
     </ClInclude>
     <ClInclude Include="cheats\meta.hpp">
       <Filter>Header Files\cheats</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Resource Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

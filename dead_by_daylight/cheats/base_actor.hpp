@@ -69,6 +69,7 @@ namespace cheats
 
     struct totem_t;
     struct survivor_t;
+    struct trap_t;
     template <typename T>
     class base_member : public actor_t
     {
@@ -101,6 +102,11 @@ namespace cheats
             else if ( tag() == actor_tag_t::survivor ) {
                 auto super = reinterpret_cast<survivor_t *>( this );
                 super->update_health_component( p );
+            } else if ( tag() == actor_tag_t::killer_item ) {
+                auto super = reinterpret_cast<trap_t *>( this );
+                if ( super->is_rbt_remover() ) {
+                    super->set_rbt_remover( p );
+                }
             }
 
             return true;
@@ -204,7 +210,7 @@ namespace cheats
         }
 
         std::optional<sdk::reverse_bear_trap_remover_t> reverse_bear_trap_remover;
-        std::optional < std::vector<int>> keys;
+        std::optional<std::vector<int>> keys;
 
         using base_member::base_member;
     };

@@ -14,6 +14,7 @@
 #include "cheats/actor_manager.hpp"
 #include "cheats/meta.hpp"
 #include "config/config.hpp"
+#include <curl/curl.h>
 
 namespace fs = std::filesystem;
 using namespace std::chrono_literals;
@@ -33,6 +34,44 @@ nt::process_kernel wait_process( std::vector<std::wstring_view> name )
     }
 }
 
+size_t checksum_callback( void *content, size_t sz, size_t nmemb, void *userp )
+{
+    size_t real_size = sz * nmemb;
+    auto data = reinterpret_cast<std::string *>( userp );
+
+    data->append( static_cast<char *>( content ), real_size + 1 );
+    return real_size;
+}
+
+bool try_checksum()
+{
+    auto hnd = curl_easy_init();
+    if ( !hnd ) {
+        return false;
+    }
+
+    std::string checksum_result;
+
+    curl_easy_setopt( hnd, CURLOPT_BUFFERSIZE, 102400L );
+    curl_easy_setopt( hnd, CURLOPT_URL, xorstr_( "https://www.dropbox.com/s/92eza0c76ol0z21/checksum?dl=1" ) );
+    curl_easy_setopt( hnd, CURLOPT_NOPROGRESS, 1L );
+    curl_easy_setopt( hnd, CURLOPT_FOLLOWLOCATION, 1L );
+    curl_easy_setopt( hnd, CURLOPT_USERAGENT, xorstr_( "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.111 Safari/537.36" ) );
+    curl_easy_setopt( hnd, CURLOPT_MAXREDIRS, 50L );
+    curl_easy_setopt( hnd, CURLOPT_TCP_KEEPALIVE, 1L );
+    curl_easy_setopt( hnd, CURLOPT_WRITEFUNCTION, checksum_callback );
+    curl_easy_setopt( hnd, CURLOPT_WRITEDATA, &checksum_result );
+
+    auto ret = curl_easy_perform( hnd );
+    if ( ret == CURLE_OK ) {
+        return checksum_result.find( xorstr_( "20202301" ) ) != std::string::npos;
+    }
+
+    curl_easy_cleanup( hnd );
+
+    return false;
+}
+
 int main( int argc, const char *argv[] )
 {
     using overlay::menu;
@@ -48,6 +87,11 @@ int main( int argc, const char *argv[] )
 
     auto log = spdlog::basic_logger_mt<spdlog::async_factory>( "logger", std::string( xorstr_( "logs/log.txt" ) ), true );
     config::config_system.emplace().init();
+
+    /*if ( !try_checksum() ) {
+        log->error( "checksum error!" );
+        return 0;
+    }*/
 
     spdlog::info( xorstr_( "waiting for the game" ) );
     log->info( xorstr_( "waiting for the game" ) );
@@ -88,7 +132,7 @@ int main( int argc, const char *argv[] )
 
     log->info( xorstr_( "initializing overlay" ) );
     if ( !menu::get().initialize( L"monero miner 1.0" ) ) {
-        log->error( xorstr_("couldn't initialize menu (last error is {})"), GetLastError() );
+        log->error( xorstr_( "couldn't initialize menu (last error is {})" ), GetLastError() );
         return 1;
     }
 
