@@ -29,7 +29,7 @@ namespace cheats
 
     struct player_info_t
     {
-        player_info_t( std::string _name, std::string _icon, std::wstring _platform, std::vector<perk_t> _perks, std::vector<std::string> _addons, std::string _offering, std::string _power, std::uint8_t _roleid )
+        player_info_t( std::string _name, std::string _icon, std::wstring _platform, std::vector<perk_t> _perks, std::vector<std::string> _addons, std::string _offering, std::string _power, std::uint8_t _roleid, std::int32_t _level )
             : name( _name )
             , icon_name( _icon )
             , platform_id( _platform )
@@ -38,6 +38,7 @@ namespace cheats
             , addons( _addons )
             , power( _power )
             , offering( _offering )
+            , level( _level )
         {}
 
         std::string name;
@@ -45,9 +46,11 @@ namespace cheats
         std::wstring platform_id;
         std::vector<perk_t> perks;
         std::vector<std::string> addons;
+        std::vector<std::string> status_effects;
         std::string offering;
         std::string power;
         std::uint8_t role_id;
+        std::int32_t level;
     };
 
     class esp_t
@@ -67,6 +70,7 @@ namespace cheats
         std::vector<player_info_t> get_players();
         bool should_draw_actor( cheats::actor_t *actor );
 
+        std::vector<std::string> glitched_players;
         const nt::base_process &m_process;
     };
 

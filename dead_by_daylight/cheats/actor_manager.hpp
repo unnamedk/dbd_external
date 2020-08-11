@@ -49,13 +49,14 @@ namespace cheats
         {
             std::unique_lock lock { m_array_lock };
             for ( auto &a : m_actors ) {
-                if ( a ) {
+                if ( a /*&& ( ( a->component().relative_location.distance_from( m_local_pos ) / 100.f ) <= 200.f )*/ ) {
                     pred( a.get() );
                 }
             }
         }
 
         math::vector3 local_pos() { return this->m_local_pos; }
+        math::vector3 local_camera_pos() { return this->m_local_camera_pos; }
         math::qangle local_angles() { return this->m_local_angles; }
         math::vector3 local_velocity() { return this->m_local_velocity; }
         std::uintptr_t local_actor() { return this->m_local_actor; }
@@ -74,10 +75,14 @@ namespace cheats
         auto get_game_state() { return game_state; }
         void dump_names() noexcept;
 
-    private:
+        bool is_in_terror_radius() { return this->m_in_terror_radius; }
         actor_info parse_actor_info( std::string_view name );
 
+    private:
+
         const nt::base_process &m_process;
+
+        bool m_in_terror_radius = false;
 
         sdk::ugameinstance instance;
         sdk::ulocalplayer m_local_player;
@@ -91,6 +96,7 @@ namespace cheats
         sdk::udbd_game_state game_state;
 
         math::vector3 m_local_pos;
+        math::vector3 m_local_camera_pos;
         math::qangle m_local_angles;
         math::vector3 m_local_velocity;
         std::uintptr_t m_local_actor;

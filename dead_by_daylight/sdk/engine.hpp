@@ -53,7 +53,7 @@ namespace sdk
         fstring saved_network_address;
         pad( 0x28 );
         pad( 0x10 );
-        apawn* private_pawn;
+        apawn *private_pawn;
         pad( 0x78 );
         fstring player_name_private;
         pad( 8 );
@@ -108,6 +108,15 @@ namespace sdk
         fminimal_view_info pov;
     };
 
+    struct acamera_actor : aactor
+    {
+        pad( 0x24 );
+        float aspect_ratio;
+        float fov;
+        float post_process_blend_weights;
+        pad( 0x530 );
+    };
+
     // wrong size probably
     struct aplayer_camera_manager : aactor
     {
@@ -124,7 +133,9 @@ namespace sdk
         fcamera_cache_entry last_frame_camera_cache;
         fview_target view_target;
         fview_target pending_view_target;
-        pad( 0xc60 );
+        pad( 0xc28 );
+        acamera_actor *camera_actor;
+        pad( 0x30 );
     };
 
     /* struct aplayer_camera_manager : aactor
@@ -168,6 +179,10 @@ namespace sdk
         apawn *ack_pawn;
         pad( 0x10 );
         aplayer_camera_manager *camera_manager;
+        pad( 0xc );
+        math::qangle target_view_rotation;
+        math::qangle unk_angle;
+        float smooth_target_view_rot_speed;
     };
 
     struct ainfo : aactor

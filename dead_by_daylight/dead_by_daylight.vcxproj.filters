@@ -153,6 +153,12 @@
     <ClCompile Include="cheats\meta.cpp">
       <Filter>Source Files\cheats</Filter>
     </ClCompile>
+    <ClCompile Include="cheats\solver.cpp">
+      <Filter>Header Files\cheats</Filter>
+    </ClCompile>
+    <ClCompile Include="cheats\aimbot.cpp">
+      <Filter>Source Files\cheats</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format">
@@ -279,6 +285,12 @@
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cheats\aimbot.hpp">
+      <Filter>Header Files\cheats</Filter>
+    </ClInclude>
+    <ClInclude Include="cheats\solver.hpp">
+      <Filter>Header Files\cheats</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

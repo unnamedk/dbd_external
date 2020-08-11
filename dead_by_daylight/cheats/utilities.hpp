@@ -18,8 +18,12 @@ namespace cheats
         float stillness_time();
 
     private:
+        void warn_on_lobby_found();
         void auto_pallet();
-        void auto_skillcheck( sdk::acamper_player& local_pawn );
+        void auto_head_on();
+        void auto_borrowed_time();
+        void auto_skillcheck( sdk::acamper_player &local_pawn );
+        void make_turns( std::uintptr_t controller );
 
         const nt::base_process &m_process;
         float m_stillness_time;

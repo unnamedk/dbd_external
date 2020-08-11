@@ -30,6 +30,8 @@ std::string cheats::totem_t::get_hex_name()
         return "Hex: Thrill of the Hunt";
     } else if ( contains( "haunted" ) ) {
         return "Hex: Haunted Ground";
+    } else if ( contains( "retri" ) ) {
+        return "Hex: Retribution";
     } else {
         return "Dull";
     }

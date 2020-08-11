@@ -27,6 +27,7 @@ namespace cheats
         // environmental
         locker,
         hook,
+        breakable_wall,
         pallet,
         chest
     };
@@ -101,7 +102,9 @@ namespace cheats
 
             else if ( tag() == actor_tag_t::survivor ) {
                 auto super = reinterpret_cast<survivor_t *>( this );
-                super->update_health_component( p );
+                if ( !super->in_menu() ) {
+                    super->update_health_component( p );
+                }
             } else if ( tag() == actor_tag_t::killer_item ) {
                 auto super = reinterpret_cast<trap_t *>( this );
                 if ( super->is_rbt_remover() ) {
@@ -133,7 +136,13 @@ namespace cheats
         {
             p.read( reinterpret_cast<std::uintptr_t>( inner().health_component ), m_health );
         }
-        sdk::ucamper_health_component &health_component() { return m_health; }
+
+        bool in_menu() const noexcept { return this->m_raw_name.find( "Menu" ) != std::string_view::npos; }
+
+        sdk::ucamper_health_component &health_component()
+        {
+            return m_health;
+        }
 
     private:
         sdk::ucamper_health_component m_health;
@@ -178,6 +187,11 @@ namespace cheats
     };
 
     struct hook_t : public base_member<sdk::ameathook>
+    {
+        using base_member::base_member;
+    };
+
+    struct breakable_wall_t : public base_member<sdk::abreakable_wall>
     {
         using base_member::base_member;
     };

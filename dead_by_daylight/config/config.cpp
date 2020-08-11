@@ -21,7 +21,7 @@ void settings_manager::init()
     SHGetKnownFolderPath( FOLDERID_Documents, 0, nullptr, &path_to_docs );
 
     // Folder we will be operating on
-    ( configs_path = path_to_docs ) /= ( xorstr_("Cheat Settings") );
+    ( configs_path = path_to_docs ) /= ( xorstr_( "Cheat Settings" ) );
 
     // If the cheat folder doesn't exist, create it
     if ( !fs::exists( configs_path ) ) {
@@ -29,11 +29,11 @@ void settings_manager::init()
     }
 
     // Use default config file
-    auto default_cfg = configs_path / ( xorstr_("dbd_default_settings.json") );
+    auto default_cfg = configs_path / ( xorstr_( "dbd_default_settings.json" ) );
     main_cfg.set_config_file( default_cfg.string() );
 
     // handle scripts
-    this->scripts_path = configs_path / xorstr_("dbd_scripts");
+    this->scripts_path = configs_path / xorstr_( "dbd_scripts" );
     if ( !fs::exists( this->scripts_path ) ) {
         fs::create_directory( this->scripts_path );
     }
@@ -49,13 +49,13 @@ void settings_manager::init()
 
 void config::settings_manager::load()
 {
-    const auto load_for = [this]( auto &vec ) {
+    const auto load_for = [ this ]( auto &vec ) {
         for ( auto &opt : vec ) {
             opt.variable = this->main_cfg.get_or_insert( opt.default_value, opt.path );
         }
     };
 
-    options.esp.priority_table = this->main_cfg.get_or_insert( options.esp.priority_table, xorstr_("esp.priority_table") );
+    options.esp.priority_table = this->main_cfg.get_or_insert( options.esp.priority_table, xorstr_( "esp.priority_table" ) );
 
     load_for( bools );
     load_for( ints );
@@ -70,12 +70,12 @@ void config::settings_manager::load()
 
 void config::settings_manager::save()
 {
-    const auto save_for = [this]( auto &vec ) {
+    const auto save_for = [ this ]( auto &vec ) {
         for ( auto &opt : vec ) {
             this->main_cfg.put( opt.variable, opt.path );
         }
     };
-    this->main_cfg.put( options.esp.priority_table, xorstr_("esp.priority_table") );
+    this->main_cfg.put( options.esp.priority_table, xorstr_( "esp.priority_table" ) );
     save_for( bools );
     save_for( ints );
     save_for( floats );
@@ -91,32 +91,46 @@ void config::settings_manager::save()
 
 void config::settings_manager::populate_settings()
 {
-    setup_value( xorstr_("esp.enabled"), config::options.esp.enabled, true );
-    setup_value( xorstr_("esp.filter_flags"), config::options.esp.filter_flags, ( killers | survivors | totems | hatches ) );
-    setup_value( xorstr_("esp.radar_enabled"), config::options.esp.radar, true );
-    setup_value( xorstr_("esp.radar_preview_icons"), config::options.esp.radar_preview_icons, false );
-    setup_value( xorstr_("esp.radar_icon_scale"), config::options.esp.radar_icon_scale, 4.5f );
-    setup_value( xorstr_("esp.radar_image_size"), config::options.esp.radar_image_size, 32.f );
-    setup_value( xorstr_("esp.radar_zoom"), config::options.esp.radar_zoom, config::options.esp.radar_icon_scale );
-    setup_value( xorstr_("esp.hide_dull_totems"), config::options.esp.hide_dull_totems, false );
+    // should use some auto-serializer like cereal here instead of this
+    setup_value( xorstr_( "aim.key" ), config::options.aim.key, VK_SHIFT );
+    setup_value( xorstr_( "aim.pred_key" ), config::options.aim.aim_pred_key, VK_SHIFT );
+    setup_value( xorstr_( "aim.fov" ), config::options.aim.fov, 30.f );
 
-    setup_value( xorstr_("esp.dull_totem_color"), config::options.esp.dull_totem_color, config::options.esp.dull_totem_color );
-    setup_value( xorstr_("esp.hex_totem_color"), config::options.esp.hex_totem_color, config::options.esp.hex_totem_color );
-    setup_value( xorstr_("esp.hatch_closed_color"), config::options.esp.hatch_closed_color, config::options.esp.hatch_closed_color );
-    setup_value( xorstr_("esp.hatch_open_color"), config::options.esp.hatch_open_color, config::options.esp.hatch_open_color );
-    setup_value( xorstr_("esp.door_closed_color"), config::options.esp.door_closed_color, config::options.esp.door_closed_color );
-    setup_value( xorstr_("esp.door_open_color"), config::options.esp.door_open_color, config::options.esp.door_open_color );
-    setup_value( xorstr_("esp.pallet_up_color"), config::options.esp.pallet_up_color, config::options.esp.pallet_up_color );
-    setup_value( xorstr_("esp.pallet_down_color"), config::options.esp.pallet_down_color, config::options.esp.pallet_down_color );
-    setup_value( xorstr_("esp.hook_color"), config::options.esp.hook_color, config::options.esp.hook_color );
-    setup_value( xorstr_("esp.chest_color"), config::options.esp.chest_color, config::options.esp.chest_color );
-    setup_value( xorstr_("esp.locker_color"), config::options.esp.locker_color, config::options.esp.locker_color );
-    setup_value( xorstr_("esp.trap_color"), config::options.esp.trap_color, config::options.esp.trap_color );
+    setup_value( xorstr_( "esp.enabled" ), config::options.esp.enabled, true );
+    setup_value( xorstr_( "esp.filter_flags" ), config::options.esp.filter_flags, ( killers | survivors | totems | hatches ) );
+    setup_value( xorstr_( "esp.radar_enabled" ), config::options.esp.radar, true );
+    setup_value( xorstr_( "esp.radar_preview_icons" ), config::options.esp.radar_preview_icons, false );
+    setup_value( xorstr_( "esp.radar_icon_scale" ), config::options.esp.radar_icon_scale, 4.5f );
+    setup_value( xorstr_( "esp.radar_image_size" ), config::options.esp.radar_image_size, 32.f );
+    setup_value( xorstr_( "esp.radar_zoom" ), config::options.esp.radar_zoom, config::options.esp.radar_icon_scale );
+    setup_value( xorstr_( "esp.hide_dull_totems" ), config::options.esp.hide_dull_totems, false );
 
-    setup_value( xorstr_("misc.autoskillcheck"), config::options.misc.autoskillcheck, false );
-    setup_value( xorstr_("misc.autoskillcheck_key"), config::options.misc.autoskillcheck_key, VK_XBUTTON1 );
-    setup_value( xorstr_("misc.autopallet"), config::options.misc.autopallet, false );
-    setup_value( xorstr_("misc.autopallet_key"), config::options.misc.autopallet_key, VK_MENU );
+    setup_value( xorstr_( "esp.dull_totem_color" ), config::options.esp.dull_totem_color, config::options.esp.dull_totem_color );
+    setup_value( xorstr_( "esp.hex_totem_color" ), config::options.esp.hex_totem_color, config::options.esp.hex_totem_color );
+    setup_value( xorstr_( "esp.hatch_closed_color" ), config::options.esp.hatch_closed_color, config::options.esp.hatch_closed_color );
+    setup_value( xorstr_( "esp.hatch_open_color" ), config::options.esp.hatch_open_color, config::options.esp.hatch_open_color );
+    setup_value( xorstr_( "esp.door_closed_color" ), config::options.esp.door_closed_color, config::options.esp.door_closed_color );
+    setup_value( xorstr_( "esp.door_open_color" ), config::options.esp.door_open_color, config::options.esp.door_open_color );
+    setup_value( xorstr_( "esp.pallet_up_color" ), config::options.esp.pallet_up_color, config::options.esp.pallet_up_color );
+    setup_value( xorstr_( "esp.pallet_down_color" ), config::options.esp.pallet_down_color, config::options.esp.pallet_down_color );
+    setup_value( xorstr_( "esp.hook_color" ), config::options.esp.hook_color, config::options.esp.hook_color );
+    setup_value( xorstr_( "esp.chest_color" ), config::options.esp.chest_color, config::options.esp.chest_color );
+    setup_value( xorstr_( "esp.locker_color" ), config::options.esp.locker_color, config::options.esp.locker_color );
+    setup_value( xorstr_( "esp.trap_color" ), config::options.esp.trap_color, config::options.esp.trap_color );
+
+    setup_value( xorstr_( "misc.autoskillcheck" ), config::options.misc.autoskillcheck, false );
+    setup_value( xorstr_( "misc.autoskillcheck_key" ), config::options.misc.autoskillcheck_key, VK_XBUTTON1 );
+    setup_value( xorstr_( "misc.autopallet" ), config::options.misc.autopallet, false );
+    setup_value( xorstr_( "misc.autopallet_key" ), config::options.misc.autopallet_key, VK_MENU );
+    setup_value( xorstr_( "misc.auto_bt" ), config::options.misc.auto_borrowed, false );
+    setup_value( xorstr_( "misc.auto_bt_key" ), config::options.misc.auto_borrowed_key, VK_MENU );
+    setup_value( xorstr_( "misc.turn_keys" ), config::options.misc.turn_keys, false );
+    setup_value( xorstr_( "misc.turn_speed" ), config::options.misc.turn_speed, 0.5f );
+    setup_value( xorstr_( "misc.turn_key_left" ), config::options.misc.turn_key_left, static_cast<int>( 'Q' ) );
+    setup_value( xorstr_( "misc.turn_key_right" ), config::options.misc.turn_key_right, static_cast<int>( 'E' ) );
+
+    setup_value( xorstr_( "misc.auto_headon" ), config::options.misc.auto_headon, false );
+    setup_value( xorstr_( "misc.auto_headon_key" ), config::options.misc.auto_headon_key, VK_SHIFT );
 }
 
 void config::settings_manager::populate_scripts()

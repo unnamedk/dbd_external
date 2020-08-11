@@ -20,12 +20,20 @@ namespace config
         chests = ( 1 << 7 ),
         items = ( 1 << 8 ),
         hooks = ( 1 << 9 ),
-        lockers = ( 1 << 10 )
+        lockers = ( 1 << 10 ),
+        breakable_wall = ( 1 << 11 )
     };
     extern const std::array<const char *, 124> keys_list;
 
     struct options_t
     {
+        struct
+        {
+            int key = 0x10;
+            int aim_pred_key = 0x10;
+            float fov = 40.f;
+        } aim;
+
         struct
         {
             bool enabled = false;
@@ -84,6 +92,20 @@ namespace config
 
             bool autopallet = true;
             int autopallet_key = 0x5;
+
+            bool auto_borrowed = false;
+            int auto_borrowed_key = 0x5;
+
+            bool auto_headon = false;
+            int auto_headon_key = 0x5;
+
+            bool turn_keys = false;
+            float turn_speed = 0.5f;
+            int turn_key_left = 0;
+            int turn_key_right = 0;
+
+            float gravity = 9.81f;
+            float fov = 30.f;
         } misc;
 
         struct

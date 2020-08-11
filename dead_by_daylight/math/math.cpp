@@ -25,10 +25,6 @@ math::qangle math::vector_angles( const math::vector3 &a, const math::vector3 &b
         ans.y() -= 180.f;
     else if ( ans.y() < 90.f )
         ans.y() += 180.f;
-    else if ( ans.y() == 90.f )
-        ans.y() = 0.f;
-
-    ans.clamp();
 
     return ans;
 }

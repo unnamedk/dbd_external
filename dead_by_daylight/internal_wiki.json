@@ -320,9 +320,9 @@
         ]
     ],
     [
-        "barbecueampchilli",
+        "barbecueandchilli",
         [
-            "Barbecue &amp; Chilli",
+            "Barbecue & Chilli",
             "A deep bond with The Entity  unlocks potential in one's Aura-reading ability.\nAfter hooking a Survivor, all other Survivors' Auras  are revealed to you for 4 seconds when they are farther than 40 metres from the Hook .\n\nEach time a Survivor is hooked for the first time, gain a 25 % stack-able bonus to all Bloodpoint gains up to a maximum of 50/75/100 %.\nThe bonus Bloodpoints are only awarded post-Trial.\n\"I just can't take no pleasure in killing. There's just some things you gotta do. Don't mean you have to like it.\" - Drayton Sawyer",
             6
         ]
@@ -1120,7 +1120,7 @@
         ]
     ],
     [
-        "mettleofman",
+        "themettleofman",
         [
             "Mettle of Man",
             "Evil has a way of always finding you.\nAfter you earn 3 Protection Hit Score Events, Mettle of Man activates. \nOnce activated, the next occasion that would put you into the Dying State  from the Injured State  is ignored. \nThe next time you heal back to full health, your Aura will be revealed to the Killer when you are farther than 12/14/16 metres from the Killer.\nMettle of Man will deactivate the next time you are put into the Dying State.\nIncreases your chances of being the Obsession.\nThe Killer can only be obsessed with one Survivor at a time.\n\"Evil has a bullseye on my back the size of Tiger Stadium.\" - Ash Williams",
@@ -2104,7 +2104,7 @@
         ]
     ],
     [
-        "mouldyelectrode",
+        "moldyelectrode",
         [
             "Mouldy Electrode",
             "A mouldy electrode which can nevertheless conduct a weak electrical current.\nSlightly increases Shock Therapy Attack range.\nSlightly decreases Shock Therapy Charge rate.",
@@ -2680,7 +2680,7 @@
         ]
     ],
     [
-        "order",
+        "orderclassii",
         [
             "Order",
             "A high stimulus ECT procedure, part of a patient's daily routine at the L ry's Memorial Institute. Can cause a state of moderate confusion in the patient.\nModerately increases Madness  inflicted by Static Blast.\nSurvivors with Madness II or III suffer from the following Afflictions:\n\nBroken Pallets may appear to be replaced with Illusionary Pallets that persist until approached.\nIllusionary Pallets are generated every 20 seconds at the location of a Broken Pallet within 64 metres of The Doctor.\nThe Doctor shares in his patients' Madness in order to read the Auras  of Illusionary Pallets.\nAfflictions of the same type do not stack.\n\"Side effects are very rare.\" - L ry's Memorial Institute",

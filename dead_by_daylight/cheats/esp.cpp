@@ -5,7 +5,6 @@
 #include "../config/options.hpp"
 #include <algorithm>
 #include <DirectXTex.h>
-#include <magic_enum.hpp>
 
 #include "../overlay/menu.hpp"
 #include "../math/math.hpp"
@@ -15,6 +14,7 @@
 
 #include <fmt/printf.h>
 #include <phnt_windows.h>
+#include <fstream>
 #include "meta.hpp"
 
 std::optional<cheats::esp_t> cheats::esp;
@@ -31,6 +31,34 @@ inline void
         ImGui::PopTextWrapPos();
         ImGui::EndTooltip();
     }
+}
+
+std::string_view power_to_killer( const std::string &power )
+{
+    static std::vector<std::pair<std::string, std::string_view>> data = {
+        { "Hatchet", "huntress" },
+        { "Ghost Power", "huntress" },
+        { "Harpoon", "deathslinger" },
+        { "Blinker", "nurse" },
+        { "Reverse Bear Trap", "pig" },
+        { "Phase Walker", "spirit" },
+        { "Beartrap", "trapper" },
+        { "Cloak Bell", "wraith" },
+        { "Chainsaw", "hillbilly" },
+        { "Qatar Killer Power", "demogorgon" },
+        { "Stalker", "myers" },
+        { "Frenzy", "legion" },
+        { "Plague Power", "plague" },
+        { "Kanobo", "oni" },
+    };
+
+    for ( auto &[ p, n ] : data ) {
+        if ( power.find( p ) != std::string::npos ) {
+            return n;
+        }
+    }
+
+    return "";
 }
 
 void cheats::esp_t::run()
@@ -61,8 +89,24 @@ void cheats::esp_t::draw_name_esp()
     std::vector<std::tuple<std::string, int, math::vector3>> names;
     names.reserve( 30 );
 
-    actor_manager->iterate_actors( [this, &names]( cheats::actor_t *actor ) {
+    cheats::survivor_t *local_actor = nullptr;
+
+    auto last_glitched_players = glitched_players;
+    glitched_players.clear();
+
+    actor_manager->iterate_actors( [this, &names, &local_actor]( cheats::actor_t *actor ) {
         if ( !actor || !should_draw_actor( actor ) ) {
+            return;
+        }
+
+
+        auto dist = actor->component().relative_location.distance_from( actor_manager->local_pos() ) / 100.f;
+        if ((actor->component().relative_location.distance_from(actor_manager->local_pos()) / 100.f) > 200.f) {
+            return;
+        }
+
+        if ( config::options.esp.debug_mode ) {
+            names.emplace_back( actor->raw_name(), 1, actor->component().relative_location );
             return;
         }
 
@@ -121,23 +165,50 @@ void cheats::esp_t::draw_name_esp()
 
             case actor_tag_t::survivor: {
                 auto survivor = reinterpret_cast<cheats::survivor_t *>( actor );
-                if ( !survivor->inner().health_component || ( survivor->health_component().current_health_state_count > 2 ) || ( survivor->health_component().current_health_state_count < -1 ) ) {
+                if ( survivor->base() == actor_manager->local_actor() ) {
+                    local_actor = survivor;
+                }
+
+                if ( survivor->in_menu() || !survivor->inner().health_component || ( survivor->health_component().current_health_state_count > 2 ) || ( survivor->health_component().current_health_state_count < -1 ) ) {
                     names.emplace_back( fmt::sprintf( "%s", survivor->name().data() ), actor->priority(), actor->component().relative_location );
                 } else if ( survivor->health_component().current_health_state_count == -1 ) {
                     names.emplace_back( fmt::sprintf( "%s (dead)", survivor->name().data() ), actor->priority(), actor->component().relative_location );
                 } else {
                     names.emplace_back( fmt::sprintf( "%s (%i HP)", survivor->name().data(), survivor->health_component().current_health_state_count ), actor->priority(), actor->component().relative_location );
                 }
+
                 break;
             }
+            case actor_tag_t::killer: {
+                auto name = actor->name();
+                if ( actor_manager->is_in_terror_radius() ) {
+                    name = fmt::format( "{} (in terror radius)", name );
+                }
+
+                names.emplace_back( name, actor->priority(), actor->component().relative_location );
+
+                break;
+            }
+            /*case actor_tag_t::breakable_wall: {
+                auto name = actor->name();
+                names.emplace_back( fmt::format( "{} (state {})", actor->name(), (int)actor->as < breakable_wall_t >()->inner().state), actor->priority(), actor->component().relative_location );
+
+                break;
+            }*/
             default:
                 names.emplace_back( actor->name(), actor->priority(), actor->component().relative_location );
         }
     } );
 
-    std::sort( names.begin(), names.end(), []( auto &a, auto &b ) {
-        return ( std::get<1>( a ) > std::get<1>( b ) );
-    } );
+    if ( config::options.esp.debug_mode ) {
+        std::sort( names.begin(), names.end(), []( auto &a, auto &b ) {
+            return ( std::get<math::vector3>( a ).distance_from( actor_manager->local_pos() ) < std::get<math::vector3>( b ).distance_from( actor_manager->local_pos() ) );
+        } );
+    } else {
+        std::sort( names.begin(), names.end(), []( auto &a, auto &b ) {
+            return ( std::get<1>( a ) > std::get<1>( b ) );
+        } );
+    }
 
     for ( auto &[ name, _, pos ] : names ) {
         if ( pos.is_zero() ) {
@@ -164,11 +235,14 @@ void cheats::esp_t::draw_name_esp()
 
 void cheats::esp_t::draw_player_list()
 {
-    ImGui::Columns( 6 );
+    ImGui::Columns( 7 );
     ImGui::Text( "character" );
     ImGui::NextColumn();
 
     ImGui::Text( "profile" );
+    ImGui::NextColumn();
+
+    ImGui::Text( "level" );
     ImGui::NextColumn();
 
     ImGui::Text( "perks" );
@@ -198,6 +272,9 @@ void cheats::esp_t::draw_player_list()
 
                 auto color = sdk::color_t::brown();
                 switch ( entry.rarity() ) {
+                    case meta::item_rarity::common:
+                        color = sdk::color_t::brown();
+                        break;
                     case meta::item_rarity::event:
                         color = sdk::color_t::orange();
                         break;
@@ -211,13 +288,14 @@ void cheats::esp_t::draw_player_list()
                         color = sdk::color_t::purple();
                         break;
                     case meta::item_rarity::ultra_rare:
-                        color = sdk::color_t::magenta();
+                        color = sdk::color_t::pink();
                         break;
+                    case meta::item_rarity::perk:
                     default:
                         color = sdk::color_t::white();
                         break;
                 }
-                  
+
                 ImGui::Image( tex[ item_id ], desired_icon_size, {}, { 1, 1 }, ImVec4( color.clamped_r(), color.clamped_g(), color.clamped_b(), 1.f ), {} );
                 set_tooltip( std::data( tooltip ) );
             } else {
@@ -233,7 +311,32 @@ void cheats::esp_t::draw_player_list()
 
     auto players = get_players();
     for ( auto &p : players ) {
-        ImGui::Image( tex[ p.icon_name ], desired_icon_size );
+        auto killer_name = power_to_killer( p.power );
+        if ( killer_name.empty() ) {
+            killer_name = "unknown";
+        }
+
+        ImGui::PushID( prop_id++ );
+        if ( ImGui::ImageButton( tex[ p.icon_name ], desired_icon_size ) ) {
+            auto data = fmt::format( "Character: {}\nPerks: {}\nAddons: {}\nOffering: {}\nStatus effects: {}\n", 
+                killer_name, fmt::join( p.perks, ", " ), fmt::join( p.addons, ", " ), p.offering, fmt::join(p.status_effects, ", ") );
+            
+            if ( data.size() > 200 ) {
+                data.resize( 195 );
+                data += "[...]";
+            }
+
+            if ( OpenClipboard( nullptr ) ) {
+                auto mem = GlobalAlloc( GMEM_MOVEABLE, data.size() + 1 );
+                memcpy( GlobalLock( mem ), data.data(), data.size() + 1 );
+
+                GlobalUnlock( mem );
+                EmptyClipboard();
+                SetClipboardData( CF_TEXT, mem );
+                CloseClipboard();
+            }
+        }
+        ImGui::PopID();
         ImGui::NextColumn();
 
         auto plat_id = nt::utils::narrow( p.platform_id );
@@ -254,6 +357,9 @@ void cheats::esp_t::draw_player_list()
         ImGui::PopID();
         set_tooltip( url.data() );
 
+        ImGui::NextColumn();
+
+        ImGui::Text( "%i", p.level );
         ImGui::NextColumn();
 
         auto str_to_icon = []( std::string s ) {
@@ -410,13 +516,14 @@ void cheats::esp_t::draw_radar()
             }
 
             case actor_tag_t::hook:
-                if ( reinterpret_cast<cheats::hook_t *>( actor )->inner().is_sabotaged ||
-                    reinterpret_cast<cheats::hook_t *>( actor )->inner().is_sacrificed ||
+                if ( /*reinterpret_cast<cheats::hook_t *>( actor )->inner().is_sabotaged ||
+                    reinterpret_cast<cheats::hook_t *>( actor )->inner().is_sacrificed ||*/
                     reinterpret_cast<cheats::hook_t *>( actor )->inner().is_survivor_struggling ) {
                     clr = sdk::color_t::red();
+                } else {
+                    clr = config::options.esp.hook_color;
                 }
 
-                clr = config::options.esp.hook_color;
                 break;
 
             case actor_tag_t::locker:
@@ -435,6 +542,69 @@ void cheats::esp_t::draw_radar()
         }
 
         render_image( texture, screen_pos, clr );
+
+        if ((actor->tag() == actor_tag_t::survivor) || (actor->tag() == actor_tag_t::killer)) {
+            auto survivor = actor->as<cheats::survivor_t>();
+
+            sdk::aplayerstate state;
+            if ( m_process.read( reinterpret_cast<uintptr_t>( survivor->inner().state ), state ) ) {
+                auto x_pos = ImVec2( winpos.x + screen_pos.x() - config::options.esp.radar_image_size, winpos.y + screen_pos.y() - config::options.esp.radar_image_size );
+                constexpr auto y = offsetof( sdk::aplayerstate, player_name );
+                std::wstring wstr;
+
+                try {
+                    sdk::fstring player_name_private;
+                    if ( ( m_process.read( reinterpret_cast<uintptr_t>( survivor->inner().state ) + 0x450, player_name_private ) ) && ( player_name_private.count < 64 ) ) {
+                        wstr.resize( player_name_private.count + 1 );
+
+                        if ( m_process.read_ptr( reinterpret_cast<uintptr_t>( player_name_private.data ), wstr.data(), player_name_private.count * sizeof( wchar_t ) ) ) {
+                            auto name = nt::utils::narrow( wstr );
+                            draw_list->AddText( x_pos, IM_COL32_WHITE, name.data() );
+                        }
+                    }
+                }
+                catch (...) {
+                }
+            }
+        }
+
+        if ( actor->tag() == actor_tag_t::survivor ) {
+            auto survivor = actor->as<cheats::survivor_t>();
+
+            if ( !survivor->in_menu() && ( survivor->health_component().current_health_state_count == 0 ) ) {
+                sdk::uperk_manager manager;
+                if ( m_process.read( ( uintptr_t ) survivor->inner().perk_manager, manager ) ) {
+                    sdk::uperk_collection_component perk_collection;
+
+                    if ( m_process.read( ( uintptr_t ) manager.perks, perk_collection ) ) {
+                        for ( int i = 0; i < perk_collection._array.count; ++i ) {
+                            const auto offset = reinterpret_cast<std::uintptr_t>( perk_collection._array.data ) + ( i * sizeof( std::uintptr_t ) );
+
+                            sdk::uperk perk;
+                            if ( auto class_addr = 0ull; m_process.read( offset, class_addr ) && m_process.read( class_addr, perk ) ) {
+                                auto perk_name = actor_manager->get_name_for_id( perk.id.number );
+                                if ( perk_name.empty() ) {
+                                    continue;
+                                }
+
+                                auto is_usable = perk.is_usable;
+                                if ( !is_usable ) {
+                                    continue;
+                                }
+
+                                auto x_pos = ImVec2( winpos.x + screen_pos.x() - config::options.esp.radar_image_size, winpos.y + screen_pos.y() - config::options.esp.radar_image_size );
+                                x_pos.y += ( static_cast<float>( i ) * 16.f );
+                                if ( perk_name == "DecisiveStrike" ) {
+                                    draw_list->AddText( x_pos, IM_COL32_WHITE, "Decisive Strike" );
+                                } else if ( perk_name == "SelfSufficient" ) {
+                                    draw_list->AddText( x_pos, IM_COL32_WHITE, "Unbreakable" );
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     } );
 
     ImGui::End();
@@ -467,6 +637,8 @@ bool cheats::esp_t::should_draw_actor( cheats::actor_t *actor )
             return ( config::options.esp.filter_flags & config::survivors ) && ( actor->base() != actor_manager->local_actor() );
         case actor_tag_t::killer:
             return ( config::options.esp.filter_flags & config::killers ) && ( actor->base() != actor_manager->local_actor() );
+        case actor_tag_t::breakable_wall:
+            return ( config::options.esp.filter_flags & config::breakable_wall ) && ( actor->as<cheats::breakable_wall_t>()->inner().state != sdk::abreakable_wall::breakable_state_t::broken );
 
         default:
             return config::options.esp.debug_mode;
@@ -515,7 +687,12 @@ std::vector<cheats::player_info_t> cheats::esp_t::get_players()
             return std::string( raw_name );
         };
 
+        if ( ( state.platform_account_id.count > 20 ) || ( state.platform_account_id.count < 0 ) ) {
+            return std::nullopt;
+        }
+
         std::wstring platform_account_id;
+
         platform_account_id.resize( static_cast<std::size_t>( state.platform_account_id.count * 2 ) );
         if ( !cheats::esp->m_process.read_ptr( reinterpret_cast<uintptr_t>( state.platform_account_id.data ), platform_account_id.data(), platform_account_id.size() ) ) {
             return std::nullopt;
@@ -570,10 +747,31 @@ std::vector<cheats::player_info_t> cheats::esp_t::get_players()
         if ( icon_name ) {
             icon = *icon_name;
         } else {
-            icon = state.game_role == 1 ? "killer" : "survivor";
+            if ( state.game_role == 1 ) {
+                auto killer_name = power_to_killer( power );
+                if ( killer_name.empty() ) {
+                    killer_name = "killer";
+                }
+
+                icon = killer_name;
+            } else {
+                icon = "survivor";
+            }
         }
 
-        return player_info_t { std::string( player_name ), icon, platform_account_id, perks, addons, std::string( offering ), std::string( power ), state.game_role };
+        // resolve pips to player level
+        int player_level = 0;
+        {
+            if ( player_data.pips < 6 /* rank 20-19 */ ) {
+                player_level = std::ceil( 20 - ( ( player_data.pips / 3 ) ) );
+            } else if ( player_data.pips < 30 /* rank 18-13  */ ) {
+                player_level = std::ceil( 19 - ( ( player_data.pips / 4 ) ) );
+            } else /* rank 12-1 */ {
+                player_level = std::ceil( 18 - ( player_data.pips / 5 ) );
+            }
+        }
+
+        return player_info_t { std::string( player_name ), icon, platform_account_id, perks, addons, std::string( offering ), std::string( power ), state.game_role, player_level };
     };
 
     if ( !cheats::actor_manager->get_game_state().level_ready_to_play ) {

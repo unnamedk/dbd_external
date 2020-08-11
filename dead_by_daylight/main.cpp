@@ -12,9 +12,10 @@
 #include "cheats/esp.hpp"
 #include "cheats/utilities.hpp"
 #include "cheats/actor_manager.hpp"
+#include "cheats/aimbot.hpp"
 #include "cheats/meta.hpp"
 #include "config/config.hpp"
-#include <curl/curl.h>
+//#include <curl/curl.h>
 
 namespace fs = std::filesystem;
 using namespace std::chrono_literals;
@@ -34,7 +35,7 @@ nt::process_kernel wait_process( std::vector<std::wstring_view> name )
     }
 }
 
-size_t checksum_callback( void *content, size_t sz, size_t nmemb, void *userp )
+/*size_t checksum_callback( void *content, size_t sz, size_t nmemb, void *userp )
 {
     size_t real_size = sz * nmemb;
     auto data = reinterpret_cast<std::string *>( userp );
@@ -70,7 +71,7 @@ bool try_checksum()
     curl_easy_cleanup( hnd );
 
     return false;
-}
+}*/
 
 int main( int argc, const char *argv[] )
 {
@@ -123,6 +124,7 @@ int main( int argc, const char *argv[] )
     cheats::actor_manager.emplace( process );
     cheats::esp.emplace( process );
     cheats::utilities.emplace( process );
+    cheats::aimbot.emplace( process );
 
     std::thread actor_manager_thread( &cheats::actor_manager_t::run_thread, &cheats::actor_manager.value() );
     std::thread utilities_thread( &cheats::utilities_t::run_thread, &cheats::utilities.value() );

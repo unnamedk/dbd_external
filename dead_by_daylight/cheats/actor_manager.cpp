@@ -4,6 +4,11 @@
 #include <thread>
 #include <fstream>
 
+#include "../utils/misc.hpp"
+#include <windows.h>
+
+#include <fmt/printf.h>
+
 std::optional<cheats::actor_manager_t> cheats::actor_manager;
 
 enum string_comparision : std::uint32_t
@@ -91,17 +96,53 @@ void cheats::actor_manager_t::run_thread()
                 continue;
             }
 
+            if ( name.find( "DecalEffect" ) != std::string::npos ) {
+                continue;
+            }
+
             if ( name == "DBDPlayerCameraManager" ) {
                 sdk::aplayer_camera_manager camera_mgr;
                 if ( sdk::aactor spected_actor; this->m_process.read( ptr, camera_mgr ) && this->m_process.read( reinterpret_cast<std::uintptr_t>( camera_mgr.view_target.target ), spected_actor ) ) {
+                    sdk::uscenecomponent camera_component;
+                    if (m_process.read((uintptr_t)camera_mgr.root_component, camera_component)) {
+                        m_local_camera_pos = camera_component.relative_location;
+                    }
+
                     sdk::uscenecomponent root_component;
                     if ( this->m_process.read( reinterpret_cast<std::uintptr_t>( spected_actor.root_component ), root_component ) ) {
                         has_camera_manager = true;
                         this->m_local_pos = root_component.relative_location;
                         this->m_local_velocity = root_component.velocity;
                         this->m_local_actor = reinterpret_cast<std::uintptr_t>( camera_mgr.view_target.target );
+
+                        constexpr auto receiver_offset = offsetof( sdk::acamper_player, terror_radius_receiver );
+
+                        std::uintptr_t terror_radius_receiver_offset = 0ull;
+                        if ( m_process.read( m_local_actor + receiver_offset, terror_radius_receiver_offset ) ) {
+                            sdk::uterror_radius_receiver receiver;
+                            if ( m_process.read( ( uintptr_t ) terror_radius_receiver_offset, receiver ) ) {
+                                m_in_terror_radius = receiver.in_terror_radius;
+                            }
+                        }
                     }
                 }
+
+                /*auto normalize = []( math::qangle &a ) {
+                    while ( a.y() < -180.0f )
+                        a.y() += 360.0f;
+                    while ( a.y() > 180.0f )
+                        a.y() -= 360.0f;
+
+                    if ( a.x() >= 319.f ) {
+                        a.x() = a.x() - 360.f;
+                    }
+                };
+
+                math::qangle angle;
+                if ( this->m_process.read( reinterpret_cast<std::uintptr_t>( m_local_player.player_controller ) + 0x03B0, angle ) ) {
+                    normalize( angle );
+                    fmt::print( "[ {:.2f} {:.2f} {:.2f} ]\n", angle.x(), angle.y(), angle.z() );
+                }*/
 
                 sdk::uscenecomponent actor_component;
                 if ( this->m_process.read( reinterpret_cast<std::uintptr_t>( actor.root_component ), actor_component ) ) {
@@ -155,6 +196,10 @@ void cheats::actor_manager_t::run_thread()
                 }
                 case actor_tag_t::pallet: {
                     m_actors[ i ] = std::move( std::make_unique<cheats::pallet_t>( ptr, actor_tag_t::pallet, info.pretty_name, info.name_to_icon(), name ) );
+                    break;
+                }
+                case actor_tag_t::breakable_wall: {
+                    m_actors[ i ] = std::move( std::make_unique<cheats::breakable_wall_t>( ptr, actor_tag_t::breakable_wall, info.pretty_name, info.name_to_icon(), name ) );
                     break;
                 }
                 case actor_tag_t::chest: {
@@ -267,6 +312,10 @@ cheats::actor_info cheats::actor_manager_t::parse_actor_info( std::string_view n
         return { "Door", actor_tag_t::doors };
     }
 
+    if ( str_compare( name, "BP_Uk_Breakable_01_C", equals ) ) {
+        return { "Breakable Wall", actor_tag_t::breakable_wall };
+    }
+
     if ( str_compare( name, "BP_TotemBase_C", equals ) ) {
         return { "Totem", actor_tag_t::totem };
     }
@@ -279,7 +328,7 @@ cheats::actor_info cheats::actor_manager_t::parse_actor_info( std::string_view n
         return { "Chest", actor_tag_t::chest };
     }
 
-    if ( str_compare( name, "ClosetStandard_C", equals ) ) {
+    if ( str_compare( name, "ClosetStandard", starts_with ) ) {
         return { "Locker", actor_tag_t::locker };
     }
 
@@ -302,6 +351,10 @@ cheats::actor_info cheats::actor_manager_t::parse_actor_info( std::string_view n
             str_compare( gen, "Suburbs_Anniversary2019_C", starts_with ) ||
             str_compare( gen, "SummerIndoors_C", starts_with ) ||
             str_compare( gen, "SummerOutdoors_C", starts_with ) ||
+            str_compare( gen, "ShortIndoors_C", starts_with ) ||
+            str_compare( gen, "ShortOutdoors_C", starts_with ) ||
+            str_compare( gen, "Standard_Anniversary2020_C", starts_with ) ||
+            str_compare( gen, "Suburbs_Anniversary2020_C", starts_with ) ||
             str_compare( gen, "_Indoors_Halloween_2019_C", starts_with ) ) {
             return { "Generator", actor_tag_t::generator };
         }
@@ -340,6 +393,7 @@ cheats::actor_info cheats::actor_manager_t::parse_actor_info( std::string_view n
             str_compare( hook, "_Summer_C", starts_with ) ||
             str_compare( hook, "_Winter2018_C", starts_with ) ||
             str_compare( hook, "_Witch_C", starts_with ) ||
+            str_compare( hook, "_Anniversary2020_C", starts_with ) ||
             str_compare( hook, "_MM_C", starts_with ) ) {
             return { "Hook", actor_tag_t::hook };
         }
@@ -409,6 +463,17 @@ cheats::actor_info cheats::actor_manager_t::parse_actor_info( std::string_view n
         if ( str_compare( name, "BP_CamperFemale09_Character_C", equals ) ||
             str_compare( name, "BP_Menu_CamperFemale09_C", equals ) ) {
             return { "Yui Kimura", actor_tag_t::survivor };
+        }
+        if ( str_compare( name, "BP_CamperFemale11_Character_C", equals ) ||
+            str_compare( name, "BP_Menu_CamperFemale11_C", equals ) ) {
+            return { "Cheryl Mason", actor_tag_t::survivor };
+        }
+
+        if ( str_compare( name, "Female", string_comparision::contains ) ) {
+            if ( str_compare( name, "BP_CamperFemale10_Character_C", equals ) ||
+                str_compare( name, "BP_Menu_CamperFemale10_C", equals ) ) {
+                return { "Zarina Kassir", actor_tag_t::survivor };
+            }
         }
 
         if ( str_compare( name, "BP_CamperMale01_C", equals ) ||
@@ -539,6 +604,15 @@ cheats::actor_info cheats::actor_manager_t::parse_actor_info( std::string_view n
         if ( str_compare( name, "BP_Slasher_Character_18_C", equals ) ||
             str_compare( name, "BP_Menu_Slasher18_C", equals ) ) {
             return { "Oni", actor_tag_t::killer };
+        }  
+        
+        if ( str_compare( name, "BP_Slasher_Character_19_C", equals ) ||
+            str_compare( name, "BP_Menu_Slasher19_C", equals ) ) {
+            return { "Deathslinger", actor_tag_t::killer };
+        }
+        if ( str_compare( name, "Bp_Slasher_Character_20_C", equals ) ||
+            str_compare( name, "BP_Menu_Slasher20_C", equals ) ) {
+            return { "Pyramidhead", actor_tag_t::killer };
         }
     }
 

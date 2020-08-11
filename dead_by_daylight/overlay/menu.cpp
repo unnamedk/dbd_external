@@ -23,6 +23,7 @@
 #include "../cheats/esp.hpp"
 #include "../config/config.hpp"
 #include "../cheats/actor_manager.hpp"
+#include "../cheats/aimbot.hpp"
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam );
 
@@ -346,6 +347,10 @@ void overlay::menu::draw_menu()
         ImGui::EndTabBar();
     }
 
+    if ( cheats::esp ) {
+        cheats::esp->draw_radar();
+    }
+
     ImGui::End();
 }
 
@@ -461,6 +466,7 @@ void overlay::menu::draw_esp_tab()
     ImGui::SelectableFlags( xorstr_( "totem" ), &config::options.esp.filter_flags, config::totems );
     ImGui::SelectableFlags( xorstr_( "hatch" ), &config::options.esp.filter_flags, config::hatches );
     ImGui::SelectableFlags( xorstr_( "pallets" ), &config::options.esp.filter_flags, config::pallets );
+    ImGui::SelectableFlags( xorstr_( "breakables" ), &config::options.esp.filter_flags, config::breakable_wall );
 
     ImGui::SelectableFlags( xorstr_( "doors" ), &config::options.esp.filter_flags, config::doors );
     ImGui::SelectableFlags( xorstr_( "generators" ), &config::options.esp.filter_flags, config::generators );
@@ -521,14 +527,11 @@ void overlay::menu::draw_esp_tab()
         make_priority_button( xorstr_( "chests" ), config::options.esp.priority_table[ 12 ] );
         make_priority_button( xorstr_( "unknown" ), config::options.esp.priority_table[ 0 ] );
     }
-
     if ( cheats::esp ) {
-        cheats::esp->run();
+        cheats::esp->draw_name_esp();
     }
-
     ImGui::EndChild();
 }
-
 
 void overlay::menu::draw_misc_tab()
 {
@@ -536,6 +539,7 @@ void overlay::menu::draw_misc_tab()
     ImGui::Text( xorstr_( "misc" ) );
     ImGui::Separator();
 
+   // ImGui::SliderFloat( xorstr_("fov##changer"), &config::options.misc.fov, 10.f, 200.f, "%.1f" );
     ImGui::Checkbox( xorstr_( "auto skillcheck" ), &config::options.misc.autoskillcheck );
     if ( config::options.misc.autoskillcheck ) {
         ImGui::Combo( xorstr_( "auto skillcheck key" ), &config::options.misc.autoskillcheck_key, config::keys_list.data(), config::keys_list.size() );
@@ -545,6 +549,35 @@ void overlay::menu::draw_misc_tab()
         ImGui::Combo( xorstr_( "auto pallet key" ), &config::options.misc.autopallet_key, config::keys_list.data(), config::keys_list.size() );
     }
 
+    /*ImGui::Checkbox( xorstr_( "auto borrowed time" ), &config::options.misc.auto_borrowed );
+    if ( config::options.misc.auto_borrowed ) {
+        ImGui::Combo( xorstr_( "auto BT key" ), &config::options.misc.auto_borrowed_key, config::keys_list.data(), config::keys_list.size() );
+    }*/
+
+    ImGui::Checkbox( xorstr_( "auto head-on" ), &config::options.misc.auto_headon );
+    if ( config::options.misc.auto_headon ) {
+        ImGui::Combo( xorstr_( "auto head-on key" ), &config::options.misc.auto_headon_key, config::keys_list.data(), config::keys_list.size() );
+    }
+    
+    ImGui::Separator();
+    ImGui::Text( xorstr_( "aimbot" ) );
+    ImGui::Separator();
+
+    ImGui::Combo( xorstr_( "aim key" ), &config::options.aim.key, config::keys_list.data(), config::keys_list.size() );
+    ImGui::Combo( xorstr_( "aim gravity pred key" ), &config::options.aim.aim_pred_key, config::keys_list.data(), config::keys_list.size() );
+    ImGui::SliderFloat( xorstr_( "fov" ), &config::options.aim.fov, 0.f, 360.f );
+    ImGui::SliderFloat( "gravity", &config::options.misc.gravity, 0.f, 3000.f );
+    ImGui::Text( ( "last projectile speed used: %.2f" ), cheats::aimbot->last_projectile_speed() );
+
+    ImGui::Separator();
+    ImGui::Checkbox( xorstr_( "turn keys" ), &config::options.misc.turn_keys );
+
+    if ( config::options.misc.turn_keys ) {
+        ImGui::SliderFloat( xorstr_( "turn speed" ), &config::options.misc.turn_speed, 0.5f, 20.f );
+        ImGui::Combo( xorstr_( "turn key left" ), &config::options.misc.turn_key_left, config::keys_list.data(), config::keys_list.size() );
+        ImGui::Combo( xorstr_( "turn key right" ), &config::options.misc.turn_key_right, config::keys_list.data(), config::keys_list.size() );
+    }
+    
     ImGui::EndChild();
 }
 
@@ -619,6 +652,7 @@ void overlay::menu::draw_changelog_tab()
         std::make_pair( xorstr_( "1.0.2" ), xorstr_( "added player list" ) ),
         std::make_pair( xorstr_( "1.0.3" ), xorstr_( "fixed a few bugs and added rarity indicator to player list" ) ),
         std::make_pair( xorstr_( "1.0.4" ), xorstr_( "fixed skillchecks not hitting \"great\" during doctor's madness" ) ),
+        std::make_pair( xorstr_( "1.0.5" ), xorstr_( "added level esp" ) ),
     };
 
     ImGui::Columns( 2 );
@@ -629,10 +663,10 @@ void overlay::menu::draw_changelog_tab()
     ImGui::NextColumn();
 
     for ( auto &[ v, t ] : changelist ) {
-        ImGui::Text( xorstr_( "%s\n" ), v );
+        ImGui::Text( ( "%s\n" ), v );
         ImGui::NextColumn();
 
-        ImGui::Text( xorstr_( "%s\n" ), t );
+        ImGui::Text( ( "%s\n" ), t );
         ImGui::NextColumn();
     }
 

@@ -48,13 +48,13 @@
     <OutDir>$(SolutionDir)bin\$(Configuration.ToLower)_$(Platform)\</OutDir>
     <IntDir>$(Configuration.ToLower)\$(Platform)\</IntDir>
     <TargetName>$(ProjectName)d</TargetName>
-    <IncludePath>D:\user\documents\repositories\cpp\winapi-cpp\winapi-cpp;$(IncludePath)</IncludePath>
+    <IncludePath>D:\user\docs\repos\cpp\winapi-cpp\winapi-cpp;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IntDir>$(Configuration.ToLower)\$(Platform)\</IntDir>
     <OutDir>$(SolutionDir)bin\$(Configuration.ToLower)_$(Platform)\</OutDir>
-    <IncludePath>D:\user\documents\repositories\cpp\winapi-cpp\winapi-cpp;$(IncludePath)</IncludePath>
+    <IncludePath>D:\user\docs\repos\cpp\winapi-cpp\winapi-cpp;$(IncludePath)</IncludePath>
     <TargetName>keylogger_manager</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -88,6 +88,8 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <DisableSpecificWarnings>26495;4005</DisableSpecificWarnings>
+      <Optimization>MaxSpeed</Optimization>
+      <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -107,11 +109,13 @@
     <ClCompile Include="..\..\..\winapi-cpp\winapi-cpp\native\process.cpp" />
     <ClCompile Include="..\..\..\winapi-cpp\winapi-cpp\native\utils.cpp" />
     <ClCompile Include="cheats\actor_manager.cpp" />
+    <ClCompile Include="cheats\aimbot.cpp" />
     <ClCompile Include="cheats\base_actor.cpp" />
     <ClCompile Include="cheats\esp.cpp" />
     <ClCompile Include="cheats\meta.cpp" />
     <ClCompile Include="cheats\offsets.cpp" />
     <ClCompile Include="cheats\scripts.cpp" />
+    <ClCompile Include="cheats\solver.cpp" />
     <ClCompile Include="cheats\utilities.cpp" />
     <ClCompile Include="config\config.cpp" />
     <ClCompile Include="config\options.cpp" />
@@ -140,10 +144,12 @@
     <ClInclude Include="..\..\..\winapi-cpp\winapi-cpp\native\process.hpp" />
     <ClInclude Include="..\..\..\winapi-cpp\winapi-cpp\native\utils.hpp" />
     <ClInclude Include="cheats\actor_manager.hpp" />
+    <ClInclude Include="cheats\aimbot.hpp" />
     <ClInclude Include="cheats\base_actor.hpp" />
     <ClInclude Include="cheats\esp.hpp" />
     <ClInclude Include="cheats\meta.hpp" />
     <ClInclude Include="cheats\scripts.hpp" />
+    <ClInclude Include="cheats\solver.hpp" />
     <ClInclude Include="cheats\utilities.hpp" />
     <ClInclude Include="cheats\offsets.hpp" />
     <ClInclude Include="config\config.hpp" />
